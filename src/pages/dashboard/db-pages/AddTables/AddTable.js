@@ -1,17 +1,23 @@
 import React, { useState, useEffect } from "react";
 import SectionWrapper from "../../SC/SectionWrapper";
 import { nanoid } from "nanoid";
+import { useDispatch, useSelector } from "react-redux";
+
 // components
 import Table from "../../SC/Table";
+import TableRow from "../../SC/TableRow";
+import TableHeadding from "../../SC/TableHead";
 import TableData from "../../SC/TableData";
-import TableDataRow from "../../SC/TableDataRow";
+import TableHeader from "../../SC/TableHeader";
+import TableBody from "../../SC/TableBody";
 import Statistic from "../../SC/Statistic";
 import StatisticsWrapper from "../../SC/StatisticsWrapper";
 
 //redux slices
 import {
-  GET_TABLES_ACTION,
   ADD_NEW_TABLE_ACTION,
+  DELETE_EXISTING_TABLE_ACTION,
+  EDIT_TABLE_ACTION,
 } from "../../../../Redux/Slice/TablesSlice";
 
 //3rd party components
@@ -35,58 +41,73 @@ import TableRestaurantOutlinedIcon from "@mui/icons-material/TableRestaurantOutl
 import DoNotDisturbOnTotalSilenceOutlinedIcon from "@mui/icons-material/DoNotDisturbOnTotalSilenceOutlined";
 
 function AddTable() {
-  const [TableState, setTableState] = useState("available");
-  const [TableType, setTableType] = useState("VIP");
+  const {
+    tables: { tablesData },
+  } = useSelector((state) => state);
+  const dispatch = useDispatch();
+  const [tablesBookedup, setTablesBookedup] = useState(0);
+  const [formData, setFormData] = useState({
+    tableNumber: "",
+    capacity: 0,
+    tableType: "Non-Smooking",
+    availability: true,
+  });
 
-  const tableHeadItems = [
-    "no",
+  const [editMode, setEditMode] = useState({
+    mode: false,
+    id: 0,
+  });
+
+  useEffect(() => {
+    calcBookedUpTables();
+  }, []);
+
+  function calcBookedUpTables() {
+    let unavailableTables = 0;
+    for (let i = 0; i < tablesData.length; i++) {
+      if (tablesData[i].availability === false) {
+        unavailableTables += 1;
+      }
+      setTablesBookedup((prev) => (prev = unavailableTables));
+    }
+  }
+
+  const handleResetAll = () => {
+    setFormData({
+      tableNumber: "",
+      capacity: 0,
+      tableType: "No Smooking",
+      availability: true,
+    });
+  };
+  const handleInputChange = (event) => {
+    const key = event.target.name;
+    const value = event.target.value;
+    setFormData({ ...formData, [key]: value });
+  };
+
+  const tableHeadData = [
+    "no.",
     "table number",
-    "table capacity",
-    "table status",
-    "table type",
+    "capacity",
+    "tableType",
+    "status",
     "delete",
     "edit",
   ];
-  const tableDataView = [
-    {
-      id: "1",
-      tableNumber: "2",
-      tableCapacity: " 4 Individuals",
-      tableStatus: "avaliable",
-      tableType: "VIP",
-    },
-    {
-      id: "2",
-      tableNumber: "4",
-      tableCapacity: " 2 Individuals",
-      tableStatus: "avaliable",
-      tableType: "smooking",
-    },
-    {
-      id: "3",
-      tableNumber: "2",
-      tableCapacity: " 4 Individuals",
-      tableStatus: "reserved",
-      tableType: "no smooking",
-    },
-  ];
-  //
-  const mdDownMediaQuery = window.matchMedia("(max-width : 768px)");
-  //
-  const handleTableStateChange = (e) => {
-    const elementValue = e.target.value;
-    setTableState(elementValue);
-  };
 
-  const handleTableTypeChange = (e) => {
-    const elementValue = e.target.value;
-    setTableType(elementValue);
+  const resetFields = () => {
+    setFormData({
+      tableNumber: "",
+      capacity: 0,
+      tableType: "Non-Smooking",
+      availability: true,
+    });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-  };
-  const handleResetAll = (e) => {
-    e.target.reset();
+    dispatch(ADD_NEW_TABLE_ACTION(JSON.stringify(formData)));
+    handleResetAll();
   };
 
   const handleSetStyles = () => {
@@ -95,6 +116,39 @@ function AddTable() {
     } else {
       return { width: "60%", alignSelf: "flex-start", mb: 2 };
     }
+  };
+
+  //
+  const mdDownMediaQuery = window.matchMedia("(max-width : 768px)");
+  //
+
+  const handleDeleteTable = (id) => {
+    dispatch(DELETE_EXISTING_TABLE_ACTION(id));
+  };
+
+  const handleEditTable = ({
+    id,
+    tableNumber,
+    capacity,
+    tableType,
+    availability,
+  }) => {
+    setEditMode({ mode: true, id });
+    setFormData({
+      tableNumber,
+      capacity,
+      tableType,
+      availability,
+    });
+  };
+
+  const sendChangesRequest = (id, data) => {
+    dispatch(EDIT_TABLE_ACTION({ id, data: JSON.stringify(data) }));
+    resetFields();
+    setEditMode({
+      id: 0,
+      mode: false,
+    });
   };
 
   return (
@@ -112,6 +166,9 @@ function AddTable() {
                     id="tableNumber"
                     type={"text"}
                     variant={"filled"}
+                    name="tableNumber"
+                    value={formData.tableNumber}
+                    onChange={(event) => handleInputChange(event)}
                     required
                   />
                 </FormGroup>
@@ -122,9 +179,12 @@ function AddTable() {
                     size="small"
                     label="Table capacity"
                     placeholder="Enter Table capacity count..."
-                    id="tableCapacity"
+                    id="capacity"
                     type={"text"}
                     variant={"filled"}
+                    name="capacity"
+                    value={formData.capacity}
+                    onChange={(event) => handleInputChange(event)}
                     required
                   />
                 </FormGroup>
@@ -134,12 +194,13 @@ function AddTable() {
                   <InputLabel> Table Status </InputLabel>
                   <Select
                     size="small"
-                    labelId="tableStatus"
-                    value={TableState}
-                    onChange={(e) => handleTableStateChange(e)}
+                    labelId="availability"
+                    name="availability"
+                    value={formData.availability}
+                    onChange={(event) => handleInputChange(event)}
                   >
-                    <MenuItem value={"available"}> available</MenuItem>
-                    <MenuItem value={"reserved"}> reserved</MenuItem>
+                    <MenuItem value={true}> available</MenuItem>
+                    <MenuItem value={false}> reserved</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -149,8 +210,9 @@ function AddTable() {
                   <Select
                     labelId="tableType"
                     size="small"
-                    value={TableType}
-                    onChange={(e) => handleTableTypeChange(e)}
+                    name="tableType"
+                    value={formData.tableType}
+                    onChange={(event) => handleInputChange(event)}
                   >
                     <MenuItem value={"VIP"}>VIP</MenuItem>
                     <MenuItem value={"Smooking"}>Smooking</MenuItem>
@@ -164,9 +226,14 @@ function AddTable() {
                     type="submit"
                     variant="contained"
                     sx={{ width: "100%" }}
-                    onClick={(e) => handleSubmit(e)}
+                    color={editMode.mode === true ? "warning" : "primary"}
+                    onClick={(e) => {
+                      editMode.mode === true
+                        ? sendChangesRequest(editMode.id, formData)
+                        : handleSubmit(e);
+                    }}
                   >
-                    add table
+                    {editMode.mode === true ? "update" : "add table"}
                   </Button>
                 </FormControl>
               </Grid>
@@ -174,7 +241,7 @@ function AddTable() {
                 <FormControl sx={{ width: "100%" }}>
                   <Button
                     type="reset"
-                    variant="contained"
+                    variant="outlined"
                     sx={{ width: "100%" }}
                     onClick={(e) => handleResetAll(e)}
                   >
@@ -189,7 +256,7 @@ function AddTable() {
           style={{ flexBasis: "250px", height: "initial" }}
           IconElement={<TableRestaurantOutlinedIcon />}
           Title="total Tables count"
-          Count="182"
+          Count={tablesData.length}
           Persent="50"
           ProgressValue="50%"
         />
@@ -198,47 +265,67 @@ function AddTable() {
           style={{ flexBasis: "250px", height: "initial" }}
           IconElement={<DoNotDisturbOnTotalSilenceOutlinedIcon />}
           Title="Tables booked up"
-          Count="172"
+          Count={tablesBookedup}
           Persent="80"
           ProgressValue="80%"
         />
       </StatisticsWrapper>
-      <Table
-        TableHeadName={tableHeadItems}
-        Title="tables view"
-        TableHeadLength={tableHeadItems.length}
-      >
-        {tableDataView.map((tableView) => {
-          return (
-            <TableDataRow key={nanoid(4)}>
-              <TableData key={nanoid(4)} Width={tableHeadItems.length}>
-                {tableView.id}
-              </TableData>
-              <TableData key={nanoid(4)} Width={tableHeadItems.length}>
-                {tableView.tableNumber}
-              </TableData>
-              <TableData key={nanoid(4)} Width={tableHeadItems.length}>
-                {tableView.tableCapacity}
-              </TableData>
-              <TableData key={nanoid(4)} Width={tableHeadItems.length}>
-                {tableView.tableStatus}
-              </TableData>
-              <TableData key={nanoid(4)} Width={tableHeadItems.length}>
-                {tableView.tableType}
-              </TableData>
-              <TableData key={nanoid(4)} Width={tableHeadItems.length}>
-                <Button type="button" variant="text" size="small">
-                  <DeleteOutlinedIcon fontSize="small" color="error" />
-                </Button>
-              </TableData>
-              <TableData key={nanoid(4)} Width={tableHeadItems.length}>
-                <Button type="button" variant="text" size="small">
-                  <EditOutlinedIcon fontSize="small" color="success" />
-                </Button>
-              </TableData>
-            </TableDataRow>
-          );
-        })}
+      <Table Title="tables view">
+        <TableHeader>
+          <TableRow>
+            {tableHeadData.map((table) => {
+              return <TableHeadding key={nanoid(3)}>{table}</TableHeadding>;
+            })}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {tablesData.map((table) => {
+            return (
+              <TableRow
+                key={nanoid(3)}
+                className={table.availability === false && "not-available"}
+              >
+                <TableData key={nanoid(2)}>{table.id}</TableData>
+                <TableData key={nanoid(2)}>{table.tableNumber}</TableData>
+                <TableData key={nanoid(2)}>{table.capacity}</TableData>
+                <TableData key={nanoid(2)}>{table.tableType}</TableData>
+                <TableData key={nanoid(2)}>
+                  {table.availability === true ? (
+                    <b>avaliable</b>
+                  ) : (
+                    <b>Reserved</b>
+                  )}
+                </TableData>
+                <TableData key={nanoid(2)}>
+                  <Button
+                    variant="text"
+                    size="small"
+                    onClick={() => handleDeleteTable(table.id)}
+                  >
+                    <DeleteOutlinedIcon color="error" fontSize="small" />
+                  </Button>
+                </TableData>
+                <TableData key={nanoid(2)}>
+                  <Button variant="text" size="small">
+                    <EditOutlinedIcon
+                      color="action"
+                      fontSize="small"
+                      onClick={() =>
+                        handleEditTable({
+                          id: table.id,
+                          tableNumber: table.tableNumber,
+                          capacity: table.capacity,
+                          tableType: table.tableType,
+                          availability: table.availability,
+                        })
+                      }
+                    />
+                  </Button>
+                </TableData>
+              </TableRow>
+            );
+          })}
+        </TableBody>
       </Table>
     </SectionWrapper>
   );

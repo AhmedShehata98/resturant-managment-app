@@ -42,6 +42,21 @@ export const ADD_RESERVATION_ACTION = createAsyncThunk(
     }
   }
 );
+
+export const DELETE_EXISTING_RESERVATION_ACTION = createAsyncThunk(
+  "reservations/deleteReservation",
+  async function (id, thunkApi) {
+    const { rejectWithValue } = thunkApi;
+    const incomingID = id;
+
+    try {
+      const req = await fetch(API_URL + "/" + incomingID, { method: "DELETE" });
+      return await req.json();
+    } catch (error) {
+      rejectWithValue(error.message);
+    }
+  }
+);
 //
 //
 const initialState = {
@@ -86,6 +101,28 @@ const reservationsSlice = createSlice({
       state.reservationsData.push(action.payload);
     },
     [ADD_RESERVATION_ACTION.rejected]: function (state, action) {
+      state.isLoading = false;
+      state.isError = true;
+      state.errorMessage = action.payload;
+    },
+
+    // delete reservations
+
+    [DELETE_EXISTING_RESERVATION_ACTION.pending]: function (state) {
+      state.isLoading = true;
+      state.errorMessage = "";
+      state.isError = false;
+    },
+    [DELETE_EXISTING_RESERVATION_ACTION.fulfilled]: function (state, action) {
+      const currentTargetID = action.meta.arg;
+      const newReservationData = state.reservationsData.filter(
+        (reservation) => reservation.id !== currentTargetID
+      );
+      state.isLoading = false;
+      state.isError = false;
+      state.reservationsData = newReservationData;
+    },
+    [DELETE_EXISTING_RESERVATION_ACTION.rejected]: function (state, action) {
       state.isLoading = false;
       state.isError = true;
       state.errorMessage = action.payload;

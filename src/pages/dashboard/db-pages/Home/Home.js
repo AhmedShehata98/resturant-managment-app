@@ -1,11 +1,18 @@
 import React, { useEffect } from "react";
 import { nanoid } from "nanoid";
-import Table from "../../SC/Table";
+
+// components
 import SectionWrapper from "../../SC/SectionWrapper";
-import TableDataRow from "../../SC/TableDataRow";
-import TableData from "../../SC/TableData";
 import StatisticsWrapper from "../../SC/StatisticsWrapper";
 import Statistic from "../../SC/Statistic";
+import Table from "../../SC/Table";
+import TableRow from "../../SC/TableRow";
+import TableHeadding from "../../SC/TableHead";
+import TableData from "../../SC/TableData";
+import TableHeader from "../../SC/TableHeader";
+import TableBody from "../../SC/TableBody";
+
+//3rd party components
 
 //icons
 import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
@@ -23,6 +30,7 @@ import { GET_PRODUCTS_ACTION } from "../../../../Redux/Slice/ProductsSlice";
 
 // Redux
 import { useSelector, useDispatch } from "react-redux";
+import { Typography } from "@mui/material";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -42,7 +50,6 @@ const Home = () => {
     dispatch(GET_PRODUCTS_ACTION());
   }, [dispatch]);
 
-  console.log(typeof emplyeesData);
   const reversionTableHead = [
     "no.",
     "customer name",
@@ -125,164 +132,123 @@ const Home = () => {
           ProgressValue="65%"
         ></Statistic>
       </StatisticsWrapper>
-      <Table
-        Title="reservations"
-        TableHeadName={reversionTableHead}
-        TableHeadLength={reversionTableHead.length}
-      >
-        {reservationsData.map((reserve) => {
-          return (
-            <TableDataRow key={nanoid(6)}>
-              <TableData key={nanoid(4)} Width={reversionTableHead.length}>
-                {reserve.id}
-              </TableData>
-              <TableData key={nanoid(4)} Width={reversionTableHead.length}>
-                {reserve.customerName}
-              </TableData>
-              <TableData key={nanoid(4)} Width={reversionTableHead.length}>
-                {reserve.tableNumber}
-              </TableData>
-              <TableData key={nanoid(4)} Width={reversionTableHead.length}>
-                {reserve.tableType}
-              </TableData>
-              <TableData key={nanoid(4)} Width={reversionTableHead.length}>
-                {reserve.peopleCount}
-              </TableData>
-              <TableData key={nanoid(4)} Width={reversionTableHead.length}>
-                {reserve.date}
-              </TableData>
-            </TableDataRow>
-          );
-        })}
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {tableHeadData.map((table) => {
+              return <TableHeadding key={nanoid(3)}>{table}</TableHeadding>;
+            })}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {tablesData.map((table) => {
+            return (
+              <TableRow
+                className={table.availability === true && "not-available"}
+                key={nanoid(4)}
+              >
+                <TableData key={nanoid(2)}>{table.id}</TableData>
+                <TableData key={nanoid(2)}>{table.tableNumber}</TableData>
+                <TableData key={nanoid(2)}>{table.capacity}</TableData>
+                <TableData key={nanoid(2)}>{table.tableType}</TableData>
+                <TableData key={nanoid(2)}>{table.availability}</TableData>
+              </TableRow>
+            );
+          })}
+        </TableBody>
       </Table>
-      <Table
-        Title="tables"
-        TableHeadName={tableHeadData}
-        TableHeadLength={tableHeadData.length}
-      >
-        {tablesData.map((data) => {
-          return (
-            <TableDataRow
-              className={data.availability === false && "reserved"}
-              key={nanoid(6)}
-            >
-              <TableData key={nanoid(4)} Width={tableHeadData.length}>
-                {data.id}
-              </TableData>
-              <TableData key={nanoid(4)} Width={tableHeadData.length}>
-                {data.tableNumber}
-              </TableData>
-              <TableData key={nanoid(4)} Width={tableHeadData.length}>
-                {data.capacity}
-              </TableData>
-              <TableData key={nanoid(4)} Width={tableHeadData.length}>
-                {data.tableType}
-              </TableData>
-              <TableData key={nanoid(4)} Width={tableHeadData.length}>
-                {data.availability ? "availabe" : "reserved"}
-              </TableData>
-            </TableDataRow>
-          );
-        })}
+      <Table collapsed>
+        <TableHeader>
+          <TableRow key={nanoid(4)}>
+            {reversionTableHead.map((reserve) => {
+              return <TableHeadding key={nanoid(2)}>{reserve}</TableHeadding>;
+            })}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {reservationsData.map((reserve) => {
+            return (
+              <TableRow key={nanoid(4)}>
+                <TableData key={nanoid(2)}>{reserve.id}</TableData>
+                <TableData key={nanoid(2)}>{reserve.customerName}</TableData>
+                <TableData key={nanoid(2)}>{reserve.tableNumber}</TableData>
+                <TableData key={nanoid(2)}>{reserve.tableType}</TableData>
+                <TableData key={nanoid(2)}>{reserve.peopleCount}</TableData>
+                <TableData key={nanoid(2)}>{reserve.date}</TableData>
+              </TableRow>
+            );
+          })}
+        </TableBody>
       </Table>
-      <Table
-        TableHeadName={productsHeadData}
-        TableHeadLength={productsHeadData.length}
-        Title="products"
-      >
-        <TableDataRow key={nanoid(4)}>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {productsHeadData.map((product) => {
+              return <TableHeadding key={nanoid(3)}>{product}</TableHeadding>;
+            })}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {productsData.map((product) => {
             return (
-              <>
-                <TableData key={nanoid(4)} Width={productsData.length}>
-                  {product.id}
-                </TableData>
-                <TableData key={nanoid(4)} Width={productsData.length}>
-                  {product.productName}
-                </TableData>
-                <TableData key={nanoid(4)} Width={productsData.length}>
-                  {product.productPrice}
-                </TableData>
-                <TableData key={nanoid(4)} Width={productsData.length}>
-                  {product.categories}
-                </TableData>
-                <TableData key={nanoid(4)} Width={productsData.length}>
-                  {product.size}
-                </TableData>
-              </>
+              <TableRow key={nanoid(3)}>
+                <TableData key={nanoid(2)}>{product.id}</TableData>
+                <TableData key={nanoid(2)}>{product.productName}</TableData>
+                <TableData key={nanoid(2)}>{product.productPrice}</TableData>
+                <TableData key={nanoid(2)}>{product.categories}</TableData>
+                <TableData key={nanoid(2)}>{product.size}</TableData>
+              </TableRow>
             );
           })}
-        </TableDataRow>
+        </TableBody>
       </Table>
-      <Table
-        TableHeadName={ordersHeadData}
-        TableHeadLength={ordersHeadData.length}
-        Title="Orders"
-      >
-        <TableDataRow key={nanoid(4)}>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {ordersHeadData.map((order) => {
+              return <TableHeadding key={nanoid(3)}>{order}</TableHeadding>;
+            })}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {ordersData.map((order) => {
             return (
-              <>
-                <TableData key={nanoid(4)} Width={ordersData.length}>
-                  {order.id}
-                </TableData>
-                <TableData key={nanoid(4)} Width={ordersData.length}>
-                  {order.tableNumber}
-                </TableData>
-                <TableData key={nanoid(4)} Width={ordersData.length}>
-                  {order.orderName}
-                </TableData>
-                <TableData key={nanoid(4)} Width={ordersData.length}>
-                  {order.category}
-                </TableData>
-                <TableData key={nanoid(4)} Width={ordersData.length}>
-                  {order.quantity}
-                </TableData>
-              </>
+              <TableRow key={nanoid(3)}>
+                <TableData key={nanoid(2)}>{order.id}</TableData>
+                <TableData key={nanoid(2)}>{order.tableNumber}</TableData>
+                <TableData key={nanoid(2)}>{order.orderName}</TableData>
+                <TableData key={nanoid(2)}>{order.category}</TableData>
+                <TableData key={nanoid(2)}>{order.quantity}</TableData>
+              </TableRow>
             );
           })}
-        </TableDataRow>
+        </TableBody>
       </Table>
-      <Table
-        TableHeadName={employeesHeadData}
-        TableHeadLength={employeesHeadData.length}
-        Title="Employees"
-      >
-        <TableDataRow key={nanoid(4)}>
-          {emplyeesData.map((employee) => {
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {employeesHeadData.map((emplyee) => {
+              return <TableHeadding key={nanoid(3)}>{emplyee}</TableHeadding>;
+            })}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {emplyeesData.map((emplyee) => {
             return (
-              <>
-                <TableData key={nanoid(4)} Width={emplyeesData.length}>
-                  {employee.id}
-                </TableData>
-                <TableData key={nanoid(4)} Width={emplyeesData.length}>
-                  {employee.fullName}
-                </TableData>
-                <TableData key={nanoid(4)} Width={emplyeesData.length}>
-                  {employee.brithday}
-                </TableData>
-                <TableData key={nanoid(4)} Width={emplyeesData.length}>
-                  {employee.phoneNumber}
-                </TableData>
-                <TableData key={nanoid(4)} Width={emplyeesData.length}>
-                  {employee.sallery}
-                </TableData>
-                <TableData key={nanoid(4)} Width={emplyeesData.length}>
-                  {employee.carrir}
-                </TableData>
-                <TableData key={nanoid(4)} Width={emplyeesData.length}>
-                  {employee.joinDate}
-                </TableData>
-                <TableData key={nanoid(4)} Width={emplyeesData.length}>
-                  {employee.endDate}
-                </TableData>
-                <TableData key={nanoid(4)} Width={emplyeesData.length}>
-                  {employee.sanctions}
-                </TableData>
-              </>
+              <TableRow key={nanoid(3)}>
+                <TableData key={nanoid(2)}>{emplyee.id}</TableData>
+                <TableData key={nanoid(2)}>{emplyee.fullName}</TableData>
+                <TableData key={nanoid(2)}>{emplyee.brithday}</TableData>
+                <TableData key={nanoid(2)}>{emplyee.phoneNumber}</TableData>
+                <TableData key={nanoid(2)}>{emplyee.sallery}</TableData>
+                <TableData key={nanoid(2)}>{emplyee.carrir}</TableData>
+                <TableData key={nanoid(2)}>{emplyee.joinDate}</TableData>
+                <TableData key={nanoid(2)}>{emplyee.endDate}</TableData>
+                <TableData key={nanoid(2)}>{emplyee.sanctions}</TableData>
+              </TableRow>
             );
           })}
-        </TableDataRow>
+        </TableBody>
       </Table>
     </SectionWrapper>
   );

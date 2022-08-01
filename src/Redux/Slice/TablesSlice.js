@@ -40,6 +40,43 @@ export const ADD_NEW_TABLE_ACTION = createAsyncThunk(
   }
 );
 
+export const DELETE_EXISTING_TABLE_ACTION = createAsyncThunk(
+  "table/deleteTable",
+  async function (id, thunkApi) {
+    const { rejectWithValue } = thunkApi;
+    const incomingID = id;
+    try {
+      const req = await fetch(API_URL + "/" + incomingID, {
+        method: "DELETE",
+      });
+      return await req.json();
+    } catch (error) {
+      rejectWithValue(error.message);
+    }
+  }
+);
+export const EDIT_TABLE_ACTION = createAsyncThunk(
+  "tables,editTable",
+  async function ({ id, data }, thunkApi) {
+    const { rejectWithValue } = thunkApi;
+    try {
+      const req = await fetch(API_URL + "/" + id, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+        body: data,
+      });
+      return await req.json();
+    } catch (error) {
+      rejectWithValue(error.message);
+    }
+  }
+);
+//
+//
+
 const initialState = {
   loading: true,
   isError: false,
@@ -80,6 +117,50 @@ export const tablesSlice = createSlice({
     },
     [ADD_NEW_TABLE_ACTION.rejected]: function (state, action) {
       state.loading = false;
+      state.isError = true;
+      state.errorMessage = action.payload;
+    },
+    // Delete the table
+    [DELETE_EXISTING_TABLE_ACTION.pending]: function (state) {
+      state.loading = true;
+      state.isError = false;
+      state.errorMessage = "";
+    },
+    [DELETE_EXISTING_TABLE_ACTION.fulfilled]: function (state, action) {
+      const deleteTarget = action.meta.arg;
+      const newTablesData = state.tablesData.filter(
+        (table) => table.id !== deleteTarget
+      );
+      state.loading = false;
+      state.isError = false;
+      state.errorMessage = "";
+      state.tablesData = newTablesData;
+    },
+    [DELETE_EXISTING_TABLE_ACTION.rejected]: function (state, action) {
+      state.isLoading = false;
+      state.isError = true;
+      state.errorMessage = action.payload;
+    },
+    // edit action
+    [EDIT_TABLE_ACTION.pending]: function (state) {
+      state.isLoading = true;
+      state.isError = false;
+      state.errorMessage = "";
+    },
+    [EDIT_TABLE_ACTION.fulfilled]: function (state, action) {
+      const currentTargetID = action.meta.arg.id;
+      const responseData = action.payload;
+      const newTablesData = state.tablesData.filter(
+        (table) => table.id !== currentTargetID
+      );
+      newTablesData.push(responseData);
+      state.isLoading = false;
+      state.isError = false;
+      state.errorMessage = "";
+      state.tablesData = newTablesData;
+    },
+    [EDIT_TABLE_ACTION.rejected]: function (state, action) {
+      state.isLoading = false;
       state.isError = true;
       state.errorMessage = action.payload;
     },

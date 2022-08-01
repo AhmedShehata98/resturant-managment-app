@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-const TableWrapper = styled.div`
+const TableContainer = styled.div`
   width: 100%;
   height: fit-content;
   display: flex;
@@ -12,83 +13,84 @@ const TableWrapper = styled.div`
   background-color: var(--bs-gray-100);
   margin-block-end: 1rem;
 `;
-const Headding = styled.h5`
+
+const StyledTableWrapper = styled.table`
+  width: 100%;
+  border: 1px solid var(--bs-gray-400);
+`;
+
+const Headding = styled.h6`
   text-transform: uppercase;
-  color: var(--bs-text);
-  height: 35px;
   color: var(--bs-primary);
-`;
-const StyledTable = styled.div`
-  width: 100%;
-  height: calc(100% - 35px);
-  border-inline: 1px solid var(--bs-primary);
-  border-bottom: 1px solid var(--bs-primary);
+  margin-bottom: 0;
 `;
 
-const TableHeadder = styled.div`
+const CollabsedNavbar = styled.header`
   width: 100%;
-  height: 25px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-
-  > span {
-    display: grid;
-    place-items: center;
-    text-transform: capitalize;
-    color: var(--bs-white);
-    border-right: 1px solid var(--bs-border-color);
-  }
-
-  > span:first-child {
-    border-left: none;
-  }
-  > span:last-child {
-    border-right: none;
-  }
-
-  > span:nth-child(even) {
-    background-color: var(--bs-primary);
-  }
-
-  > span:nth-child(odd) {
-    background-color: var(--bs-secondary);
-  }
+  justify-content: space-between;
+  background-color: var(--bs-gray-300);
+  border: 1px solid var(--bs-border-color);
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  border-radius: 0.3rem;
 `;
 
-const TableData = styled.section`
-  > span:nth-child(even) {
-    background-color: var(--bs-gray-200);
+const UncollabsedButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 90px;
+  height: 100%;
+  border: none;
+
+  > :first-child {
+    margin-block: auto;
+    line-height: 1rem;
+    user-select: none;
+    text-transform: capitalize;
+    font-weight: bold;
+    pointer-events: none;
+  }
+
+  > svg {
+    user-select: none;
+    pointer-events: none;
+    transition: transform 0.3s ease-in-out;
+  }
+  &.uncollabsed > svg {
+    transition: transform 0.3s ease-in-out;
+    transform: rotate(180deg);
   }
 `;
 
 function Table(props) {
-  const TableHead = styled.span`
-    width: calc(100% / ${props.TableHeadLength});
-    height: 100%;
-    font-size: 0.7rem;
-    font-weight: bold;
-    text-transform: capitalize;
+  const [collapseTable, setCollapseTable] = useState(
+    props.collapsed === true ? true : false
+  );
 
-    &.empty {
-      display: grid;
-      place-items: center;
-      place-content: center;
-    }
-  `;
-
-  const mapedTableHead = props.TableHeadName.map((name) => {
-    return <TableHead>{name}</TableHead>;
-  });
+  const handleClick = (e) => {
+    const btn = e.target;
+    btn.classList.toggle("uncollabsed");
+    setCollapseTable(!collapseTable);
+  };
 
   return (
-    <TableWrapper>
-      <Headding>{props.Title}</Headding>
-      <StyledTable>
-        <TableHeadder>{mapedTableHead}</TableHeadder>
-        <TableData>{props.children}</TableData>
-      </StyledTable>
-    </TableWrapper>
+    <TableContainer>
+      <CollabsedNavbar>
+        <Headding>{props.Title}</Headding>
+        <UncollabsedButton onClick={(e) => handleClick(e)}>
+          <small>show</small>
+          <KeyboardArrowDownIcon color={"action"} />
+        </UncollabsedButton>
+      </CollabsedNavbar>
+      <StyledTableWrapper>
+        <StyledTableWrapper>
+          {collapseTable && props.children}
+        </StyledTableWrapper>
+      </StyledTableWrapper>
+    </TableContainer>
   );
 }
 

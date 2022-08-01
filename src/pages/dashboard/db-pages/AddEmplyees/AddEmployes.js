@@ -7,8 +7,11 @@ import { MediaQueryMatch, HeadNameArr, emploeesListArr } from "./logic";
 import Statistic from "../../SC/Statistic";
 import StatisticsWrapper from "../../SC/StatisticsWrapper";
 import Table from "../../SC/Table";
-import TableDataRow from "../../SC/TableDataRow";
+import TableRow from "../../SC/TableRow";
+import TableHeadding from "../../SC/TableHead";
 import TableData from "../../SC/TableData";
+import TableHeader from "../../SC/TableHeader";
+import TableBody from "../../SC/TableBody";
 import Form from "../../SC/Form";
 
 // 3rd party components
@@ -21,22 +24,52 @@ import MenuItem from "@mui/material/MenuItem";
 import InputLabel from "@mui/material/InputLabel";
 import Button from "@mui/material/Button";
 
+//redux
+import { useSelector, useDispatch } from "react-redux";
+import {
+  ADD_EMPLYEES_ACTION,
+  DELETE_EXISTING_EMPLOYEE_ACTION,
+  EDIT_EMPLOYEE_ACTION,
+} from "../../../../Redux/Slice/EmloyeesSlice";
+
 //icons
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
 const AddEmployes = () => {
+  const {
+    employees: { emplyeesData },
+  } = useSelector((state) => state);
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    "full-name": "",
-    "Work-end-date": "2022-01-01",
-    "phone-number": "",
+    fullName: "",
+    endDate: "2022-01-01",
+    phoneNumber: "",
     brithday: "2020-01-01",
-    carrer: "Barista",
+    carier: "Barista",
     JoinDate: "2022-01-01",
     Sanctions: "",
-    salery: "",
+    salary: "",
   });
+  const [editMode, setEditMode] = useState({
+    mode: false,
+    id: 0,
+  });
+
+  const employeesHeadList = [
+    // "no.",
+    "full name",
+    "brithday",
+    "phone number",
+    "salery",
+    "carrir",
+    "join date",
+    "end date",
+    "sanctions",
+    "Delete",
+    "Edit",
+  ];
 
   const handleGetInputValue = (e) => {
     const value = e.target.value;
@@ -45,62 +78,81 @@ const AddEmployes = () => {
     setFormData({ ...formData, [key]: value });
   };
 
+  const resetInputs = () => {
+    setFormData({
+      fullName: "",
+      endDate: "2022-01-01",
+      phoneNumber: "",
+      brithday: "2020-01-01",
+      carier: "Barista",
+      JoinDate: "2022-01-01",
+      Sanctions: 0,
+      salary: "",
+    });
+  };
   const onSubmit = (e) => {
     e.preventDefault();
-    const fd = new FormData();
-    fd.append("full-name", formData["full-name"]);
-    fd.append("Work-end-date", formData["Work-end-date"]);
-    fd.append("phone-number", formData["phone-number"]);
-    fd.append("brithday", formData["brithday"]);
-    fd.append("carrer", formData["carrer"]);
-    fd.append("JoinDate", formData["JoinDate"]);
-    fd.append("Sanctions", formData["Sanctions"]);
-    fd.append("salery", formData["salery"]);
+    // const fd = new FormData();
+    // fd.append("full-name", formData["full-name"]);
+    // fd.append("Work-end-date", formData["Work-end-date"]);
+    // fd.append("phone-number", formData["phone-number"]);
+    // fd.append("brithday", formData["brithday"]);
+    // fd.append("carrer", formData["carrer"]);
+    // fd.append("JoinDate", formData["JoinDate"]);
+    // fd.append("Sanctions", formData["Sanctions"]);
+    // fd.append("salery", formData["salery"]);
+    const fd = {
+      fullName: formData.fullName,
+      endDate: formData.endDate,
+      phoneNumber: formData.phoneNumber,
+      brithday: formData.brithday,
+      carier: formData.carier,
+      JoinDate: formData.JoinDate,
+      Sanctions: formData.Sanctions,
+      salary: formData.salary,
+    };
+
+    dispatch(ADD_EMPLYEES_ACTION(JSON.stringify(fd)));
+    resetInputs();
   };
 
-  const mappedEmploeesListArr = emploeesListArr.map((employee) => {
-    return (
-      <TableDataRow key={nanoid(6)}>
-        <TableData key={nanoid(4)} Width={HeadNameArr.length}>
-          {employee.id}
-        </TableData>
-        <TableData key={nanoid(4)} Width={HeadNameArr.length}>
-          {employee["full-Name"]}
-        </TableData>
-        <TableData key={nanoid(4)} Width={HeadNameArr.length}>
-          {employee["join-date"]}
-        </TableData>
-        <TableData key={nanoid(4)} Width={HeadNameArr.length}>
-          {employee["end-date"]}
-        </TableData>
-        <TableData key={nanoid(4)} Width={HeadNameArr.length}>
-          {employee["phone-number"]}
-        </TableData>
-        <TableData key={nanoid(4)} Width={HeadNameArr.length}>
-          {employee.carrer}
-        </TableData>
-        <TableData key={nanoid(4)} Width={HeadNameArr.length}>
-          {employee.salery}
-        </TableData>
-        <TableData key={nanoid(4)} Width={HeadNameArr.length}>
-          {employee.brithday}
-        </TableData>
-        <TableData key={nanoid(4)} Width={HeadNameArr.length}>
-          {employee.sanctions}
-        </TableData>
-        <TableData key={nanoid(4)} width={HeadNameArr.length}>
-          <Button variant="text" size="small">
-            <DeleteOutlinedIcon fontSize="small" color="error" />
-          </Button>
-        </TableData>
-        <TableData key={nanoid(4)} width={HeadNameArr.length}>
-          <Button variant="text" size="small">
-            <EditOutlinedIcon fontSize="small" color="success" />
-          </Button>
-        </TableData>
-      </TableDataRow>
-    );
-  });
+  const handleDeleteEmployee = (id) => {
+    dispatch(DELETE_EXISTING_EMPLOYEE_ACTION(id));
+  };
+
+  const handleEditEmployee = ({
+    id,
+    fullName,
+    brithday,
+    phoneNumber,
+    carier,
+    JoinDate,
+    endDate,
+    salary,
+    Sanctions,
+  }) => {
+    setFormData({
+      fullName: fullName,
+      phoneNumber: phoneNumber,
+      endDate: endDate,
+      brithday,
+      carier,
+      JoinDate,
+      salary,
+      Sanctions,
+    });
+
+    setEditMode({
+      mode: true,
+      id,
+    });
+  };
+
+  const handleSendChangesRequest = (id, data) => {
+    dispatch(EDIT_EMPLOYEE_ACTION({ id, data: JSON.stringify(data) }));
+    setEditMode({ mode: false, id: 0 });
+    resetInputs();
+  };
 
   return (
     <SectionWrapper>
@@ -115,11 +167,11 @@ const AddEmployes = () => {
               >
                 <TextField
                   type="text"
-                  name="full-name"
+                  name="fullName"
                   id="fullName"
                   placeholder="Employee Full Name .."
                   variant="filled"
-                  value={formData["full-name"]}
+                  value={formData.fullName}
                   onChange={(e) => handleGetInputValue(e)}
                 />
               </FormControl>
@@ -130,7 +182,7 @@ const AddEmployes = () => {
                   label="brithday"
                   name="brithday"
                   type={"date"}
-                  value={formData["brithday"]}
+                  value={formData.brithday}
                   onChange={(e) => handleGetInputValue(e)}
                 />
               </FormControl>
@@ -139,10 +191,10 @@ const AddEmployes = () => {
               <FormControl sx={{ width: "100%" }}>
                 <TextField
                   label="phone number"
-                  name="phone-number"
+                  name="phoneNumber"
                   type={"number"}
                   placeholder="+201000000000"
-                  value={formData["phone-number"]}
+                  value={formData.phoneNumber}
                   onChange={(e) => handleGetInputValue(e)}
                 />
               </FormControl>
@@ -151,10 +203,10 @@ const AddEmployes = () => {
               <FormControl sx={{ width: "100%" }}>
                 <InputLabel> carrer</InputLabel>
                 <Select
-                  label="carrer"
-                  name="carrer"
-                  id="employeeCarrer"
-                  value={formData["carrer"]}
+                  label="carier"
+                  name="carier"
+                  id="employeeCarier"
+                  value={formData.carier}
                   onChange={(e) => handleGetInputValue(e)}
                 >
                   <MenuItem value="GeneralManager">General Manager</MenuItem>
@@ -179,9 +231,9 @@ const AddEmployes = () => {
                 <TextField
                   type={"number"}
                   placeholder="8000 L.E"
-                  label="salery"
-                  name="salery"
-                  value={formData["salery"]}
+                  label="salary"
+                  name="salary"
+                  value={formData.salary}
                   onChange={(e) => handleGetInputValue(e)}
                 />
               </FormControl>
@@ -202,8 +254,8 @@ const AddEmployes = () => {
                 <TextField
                   type={"date"}
                   label="Work end date"
-                  name="Work-end-date"
-                  value={formData["Work-end-date"]}
+                  name="endDate"
+                  value={formData.endDate}
                   onChange={(e) => handleGetInputValue(e)}
                 />
               </FormControl>
@@ -215,7 +267,7 @@ const AddEmployes = () => {
                   placeholder="100 L.E"
                   label="Sanctions"
                   name="Sanctions"
-                  value={formData["Sanctions"]}
+                  value={formData.Sanctions}
                   onChange={(e) => handleGetInputValue(e)}
                 />
               </FormControl>
@@ -225,13 +277,23 @@ const AddEmployes = () => {
                 sx={{ width: "100%" }}
                 type="button"
                 variant="contained"
-                onClick={(e) => onSubmit(e)}
+                color={editMode.mode === true ? "warning" : "primary"}
+                onClick={(e) => {
+                  editMode.mode === true
+                    ? handleSendChangesRequest(editMode.id, formData)
+                    : onSubmit(e);
+                }}
               >
-                add
+                {editMode.mode === true ? "update" : "add employee"}
               </Button>
             </Grid>
             <Grid item xs={12} md={4}>
-              <Button sx={{ width: "100%" }} type="reset" variant="outlined">
+              <Button
+                sx={{ width: "100%" }}
+                type="reset"
+                variant="outlined"
+                onClick={() => resetInputs()}
+              >
                 reset
               </Button>
             </Grid>
@@ -259,7 +321,60 @@ const AddEmployes = () => {
         TableHeadName={HeadNameArr}
         TableHeadLength={HeadNameArr.length}
       >
-        {mappedEmploeesListArr}
+        <TableHeader>
+          <TableRow>
+            {employeesHeadList.map((employee) => {
+              return <TableHeadding key={nanoid(3)}>{employee}</TableHeadding>;
+            })}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {emplyeesData.map((employee) => {
+            return (
+              <TableRow key={nanoid(5)}>
+                {/* <TableData key={nanoid(4)}>{employee.id}</TableData> */}
+                <TableData key={nanoid(4)}>{employee.fullName}</TableData>
+                <TableData key={nanoid(4)}>{employee.brithday}</TableData>
+                <TableData key={nanoid(4)}>{employee.phoneNumber}</TableData>
+                <TableData key={nanoid(4)}>{employee.salary}</TableData>
+                <TableData key={nanoid(4)}>{employee.carier}</TableData>
+                <TableData key={nanoid(4)}>{employee.JoinDate}</TableData>
+                <TableData key={nanoid(4)}>{employee.endDate}</TableData>
+                <TableData key={nanoid(4)}>{employee.sanctions}</TableData>
+                <TableData key={nanoid(4)}>
+                  <Button variant={"text"} size={"small"}>
+                    <DeleteOutlinedIcon
+                      fontSize={"small"}
+                      color={"error"}
+                      onClick={() => handleDeleteEmployee(employee.id)}
+                    />
+                  </Button>
+                </TableData>
+                <TableData key={nanoid(2)}>
+                  <Button variant={"text"} size={"small"}>
+                    <EditOutlinedIcon
+                      fontSize={"small"}
+                      color={"action"}
+                      onClick={() =>
+                        handleEditEmployee({
+                          id: employee.id,
+                          fullName: employee.fullName,
+                          brithday: employee.brithday,
+                          phoneNumber: employee.phoneNumber,
+                          salary: employee.salary,
+                          carier: employee.carier,
+                          JoinDate: employee.joinDate,
+                          endDate: employee.endDate,
+                          Sanctions: employee.sanctions,
+                        })
+                      }
+                    />
+                  </Button>
+                </TableData>
+              </TableRow>
+            );
+          })}
+        </TableBody>
       </Table>
     </SectionWrapper>
   );

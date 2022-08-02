@@ -30,6 +30,7 @@ import {
   ADD_EMPLYEES_ACTION,
   DELETE_EXISTING_EMPLOYEE_ACTION,
   EDIT_EMPLOYEE_ACTION,
+  GET_EMPLYEES_ACTION,
 } from "../../../../Redux/Slice/EmloyeesSlice";
 
 //icons
@@ -316,11 +317,7 @@ const AddEmployes = () => {
         />
       </StatisticsWrapper>
 
-      <Table
-        Title="Employees List"
-        TableHeadName={HeadNameArr}
-        TableHeadLength={HeadNameArr.length}
-      >
+      <Table Title="Employees List" FetchData={GET_EMPLYEES_ACTION()}>
         <TableHeader>
           <TableRow>
             {employeesHeadList.map((employee) => {

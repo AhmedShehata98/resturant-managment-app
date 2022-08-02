@@ -18,6 +18,7 @@ import {
   ADD_NEW_TABLE_ACTION,
   DELETE_EXISTING_TABLE_ACTION,
   EDIT_TABLE_ACTION,
+  GET_TABLES_ACTION,
 } from "../../../../Redux/Slice/TablesSlice";
 
 //3rd party components
@@ -270,7 +271,7 @@ function AddTable() {
           ProgressValue="80%"
         />
       </StatisticsWrapper>
-      <Table Title="tables view">
+      <Table Title="tables view" FetchData={GET_TABLES_ACTION()}>
         <TableHeader>
           <TableRow>
             {tableHeadData.map((table) => {

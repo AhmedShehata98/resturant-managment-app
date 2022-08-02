@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense } from "react";
+import React, { useState, lazy, Suspense, useEffect } from "react";
 import { nanoid } from "nanoid";
 import { createPortal } from "react-dom";
 
@@ -7,7 +7,8 @@ import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 
 // redux
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { GET_TABLES_ACTION } from "../../../../Redux/Slice/TablesSlice";
 
 // components
 import SectionWrapper from "../../SC/SectionWrapper";
@@ -21,20 +22,32 @@ import TableHeader from "../../SC/TableHeader";
 import TableBody from "../../SC/TableBody";
 import LoadingModule from "../../../../components/LoadingModule/LoadingModule";
 import { Button } from "@mui/material";
+import { GET_ORDERS_ACTION } from "../../../../Redux/Slice/OrdersSlice";
 const AddOrderModal = lazy(() => import("./SC/AddOrderModal"));
 
 const Order = () => {
+  const dispatch = useDispatch();
   const {
     orders: { ordersData },
+    tables: { tablesData },
   } = useSelector((state) => state);
-  const [showOrder, setshowOrder] = useState(false);
+  const [OrderModal, setOrderModal] = useState({
+    showOrder: false,
+    oldOrders: [],
+    TableNumber: 0,
+    tableSelectedID: 0,
+  });
   const container = document.getElementById("orders-modal");
-  const orderModal = createPortal(
+  const orderFormModal = createPortal(
     <Suspense>
-      <AddOrderModal setshowOrder={setshowOrder} />
+      <AddOrderModal setOrderModal={setOrderModal} OrderModal={OrderModal} />
     </Suspense>,
     container
   );
+
+  useEffect(() => {
+    dispatch(GET_TABLES_ACTION());
+  }, [dispatch]);
 
   const ordersHeadList = [
     "no.",
@@ -49,67 +62,32 @@ const Order = () => {
   return (
     <SectionWrapper>
       <TablesCardsWrapper>
-        <TableCard
-          setshowOrder={setshowOrder}
-          TableName="11"
-          TableCapacity="4"
-          OrdersCount="8"
-        />
-        <TableCard
-          setshowOrder={setshowOrder}
-          TableName="11"
-          TableCapacity="4"
-          OrdersCount="8"
-        />
-        <TableCard
-          setshowOrder={setshowOrder}
-          TableName="11"
-          TableCapacity="4"
-          OrdersCount="8"
-        />
-        <TableCard
-          setshowOrder={setshowOrder}
-          TableName="11"
-          TableCapacity="4"
-          OrdersCount="8"
-        />
-        <TableCard
-          setshowOrder={setshowOrder}
-          TableName="11"
-          TableCapacity="4"
-          OrdersCount="8"
-        />
-        <TableCard
-          setshowOrder={setshowOrder}
-          TableName="11"
-          TableCapacity="4"
-          OrdersCount="8"
-        />
-        <TableCard
-          setshowOrder={setshowOrder}
-          TableName="11"
-          TableCapacity="4"
-          OrdersCount="8"
-        />
-        <TableCard
-          setshowOrder={setshowOrder}
-          TableName="11"
-          TableCapacity="4"
-          OrdersCount="8"
-        />
-        <TableCard
-          setshowOrder={setshowOrder}
-          TableName="11"
-          TableCapacity="4"
-          OrdersCount="8"
-        />
+        {tablesData &&
+          tablesData.map((tableCard) => {
+            return (
+              <>
+                <TableCard
+                  key={nanoid(5)}
+                  className={
+                    tableCard.availability === false ? "not-available" : null
+                  }
+                  setOrderModal={setOrderModal}
+                  TableNumber={tableCard.tableNumber}
+                  oldOrders={tableCard.orders ? tableCard.orders : null}
+                  id={tableCard.id}
+                  TableCapacity={tableCard.capacity}
+                  OrdersCount={tableCard.orders ? tableCard.orders.length : 0}
+                />
+              </>
+            );
+          })}
       </TablesCardsWrapper>
-      {showOrder && orderModal}
-      <Table>
+      {OrderModal.showOrder && orderFormModal}
+      <Table Title="Orders" FetchData={GET_ORDERS_ACTION()}>
         <TableHeader>
           <TableRow>
             {ordersHeadList.map((order) => {
-              return <TableHeadding>{order}</TableHeadding>;
+              return <TableHeadding key={nanoid(6)}>{order}</TableHeadding>;
             })}
           </TableRow>
         </TableHeader>
@@ -117,17 +95,17 @@ const Order = () => {
           {ordersData.map((order) => {
             return (
               <TableRow key={nanoid(3)}>
-                <TableData key={nanoid(2)}>{order.id}</TableData>
-                <TableData key={nanoid(2)}>{order.tableNumber}</TableData>
-                <TableData key={nanoid(2)}>{order.orderName}</TableData>
-                <TableData key={nanoid(2)}>{order.category}</TableData>
-                <TableData key={nanoid(2)}>{order.quantity}</TableData>
-                <TableData key={nanoid(2)}>
+                <TableData key={nanoid(3)}>{order.id}</TableData>
+                <TableData key={nanoid(3)}>{order.tableNumber}</TableData>
+                <TableData key={nanoid(3)}>{order.orderName}</TableData>
+                <TableData key={nanoid(3)}>{order.category}</TableData>
+                <TableData key={nanoid(3)}>{order.quantity}</TableData>
+                <TableData key={nanoid(3)}>
                   <Button variant="text" size="small">
                     <DeleteOutlined color="error" fontSize="small" />
                   </Button>
                 </TableData>
-                <TableData key={nanoid(2)}>
+                <TableData key={nanoid(3)}>
                   <Button variant="text" size="small">
                     <EditOutlined color="action" fontSize="small" />
                   </Button>

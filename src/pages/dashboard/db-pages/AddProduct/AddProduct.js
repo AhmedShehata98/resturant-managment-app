@@ -36,6 +36,7 @@ import {
   ADD_PRODUCTS_ACTION,
   DELETE_EXISTING_PRODUCT_ACTION,
   EDIT_PRODUCT_ACTION,
+  GET_PRODUCTS_ACTION,
 } from "../../../../Redux/Slice/ProductsSlice";
 
 function AddProduct() {
@@ -236,7 +237,7 @@ function AddProduct() {
           </StatisticsWrapper>
         </Grid>
         <Grid item display={"flex"} direction={"row"} xs={12}>
-          <Table Title="products view">
+          <Table Title="products view" FetchData={GET_PRODUCTS_ACTION()}>
             <TableHeader>
               <TableRow>
                 {productTableHeadsArr.map((product) => {

@@ -1,0 +1,111 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "admin-manager",
+      "email": "admin@example.com",
+      "password": "admin-manager"
+    },
+    {
+      "id": 1,
+      "username": "admin-cashier",
+      "email": "admin@example.com",
+      "password": "admin-cashier"
+    }
+  ],
+  "reservations": [
+    {
+      "id": 1,
+      "customerName": "john due",
+      "tableNumber": "2",
+      "tableType": "VIP",
+      "peopleCount": "3",
+      "date": "2022-06-03"
+    }
+  ],
+  "products": [
+    {
+      "productName": "BlackTea",
+      "productPrice": "15",
+      "categories": "Drinks",
+      "size": "Medium",
+      "id": 2
+    },
+    {
+      "productName": "Coffe 1/4",
+      "productPrice": "40",
+      "categories": "Drinks",
+      "size": "Medium",
+      "id": 3
+    }
+  ],
+  "tables": [
+    {
+      "id": 1,
+      "tableNumber": "2",
+      "capacity": "4",
+      "tableType": "VIP",
+      "availability": true,
+      "orders": [
+        {
+          "orderName": "something 1125",
+          "quantity": "5",
+          "category": "Thirty",
+          "ID": 1
+        },
+        {
+          "orderName": "something 1",
+          "quantity": "24",
+          "category": "Thirty"
+        },
+        {
+          "orderName": "something 9000",
+          "quantity": "2",
+          "category": "Fourty"
+        },
+        {
+          "orderName": "something 1",
+          "quantity": "5",
+          "category": "Drinks"
+        }
+      ]
+    },
+    {
+      "tableNumber": "6",
+      "capacity": "2",
+      "tableType": "Non-Smooking",
+      "availability": true,
+      "id": 4,
+      "orders": [
+        {
+          "orderName": "something 91",
+          "quantity": "5",
+          "category": "Thirty",
+          "tableOrderdNumber": "6"
+        }
+      ]
+    }
+  ],
+  "emplyees": [
+    {
+      "fullName": "Ahmed Shehata",
+      "endDate": "2022-01-18",
+      "phoneNumber": "1559021655",
+      "brithday": "2020-01-15",
+      "carier": "Assistant-Manager",
+      "JoinDate": "2022-01-05",
+      "Sanctions": "0",
+      "salary": "9500",
+      "id": 1
+    }
+  ],
+  "orders": [
+    {
+      "id": 1,
+      "tableNumber": "2",
+      "orderName": " something 1",
+      "category": "Drinks",
+      "quantity": "3"
+    }
+  ]
+}

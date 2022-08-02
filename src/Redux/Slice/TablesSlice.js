@@ -74,6 +74,25 @@ export const EDIT_TABLE_ACTION = createAsyncThunk(
     }
   }
 );
+
+export const ADD_EXTRA_KEY = createAsyncThunk(
+  "tables/addExtra",
+  async function ({ id, data }, thunkapi) {
+    const { rejectWithValue } = thunkapi;
+    try {
+      const req = await fetch(API_URL + "/" + id, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+    } catch (err) {
+      rejectWithValue(err.message);
+    }
+  }
+);
 //
 //
 
@@ -160,6 +179,23 @@ export const tablesSlice = createSlice({
       state.tablesData = newTablesData;
     },
     [EDIT_TABLE_ACTION.rejected]: function (state, action) {
+      state.isLoading = false;
+      state.isError = true;
+      state.errorMessage = action.payload;
+    },
+    // put extra keys
+    [ADD_EXTRA_KEY.pending]: function (state) {
+      state.isLoading = true;
+      state.isError = false;
+      state.errorMessage = "";
+    },
+    [ADD_EXTRA_KEY.fulfilled]: function (state, action) {
+      state.isLoading = false;
+      state.isError = false;
+      state.errorMessage = "";
+      console.log(action);
+    },
+    [ADD_EXTRA_KEY.rejected]: function (state, action) {
       state.isLoading = false;
       state.isError = true;
       state.errorMessage = action.payload;

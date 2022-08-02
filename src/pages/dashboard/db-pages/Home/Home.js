@@ -43,11 +43,11 @@ const Home = () => {
   } = useSelector((state) => state);
 
   useEffect(() => {
-    dispatch(GET_TABLES_ACTION());
+    // dispatch(GET_TABLES_ACTION());
     dispatch(GET_RESERVATIONS_ACTION());
-    dispatch(GET_EMPLYEES_ACTION());
-    dispatch(GET_ORDERS_ACTION());
-    dispatch(GET_PRODUCTS_ACTION());
+    // dispatch(GET_EMPLYEES_ACTION());
+    // dispatch(GET_ORDERS_ACTION());
+    // dispatch(GET_PRODUCTS_ACTION());
   }, [dispatch]);
 
   const reversionTableHead = [
@@ -132,32 +132,38 @@ const Home = () => {
           ProgressValue="65%"
         ></Statistic>
       </StatisticsWrapper>
-      <Table>
+      <Table Title="tables" FetchData={GET_TABLES_ACTION()}>
         <TableHeader>
           <TableRow>
-            {tableHeadData.map((table) => {
-              return <TableHeadding key={nanoid(3)}>{table}</TableHeadding>;
-            })}
+            {tablesData &&
+              tableHeadData.map((table) => {
+                return <TableHeadding key={nanoid(3)}>{table}</TableHeadding>;
+              })}
           </TableRow>
         </TableHeader>
         <TableBody>
-          {tablesData.map((table) => {
-            return (
-              <TableRow
-                className={table.availability === true && "not-available"}
-                key={nanoid(4)}
-              >
-                <TableData key={nanoid(2)}>{table.id}</TableData>
-                <TableData key={nanoid(2)}>{table.tableNumber}</TableData>
-                <TableData key={nanoid(2)}>{table.capacity}</TableData>
-                <TableData key={nanoid(2)}>{table.tableType}</TableData>
-                <TableData key={nanoid(2)}>{table.availability}</TableData>
-              </TableRow>
-            );
-          })}
+          {tablesData &&
+            tablesData.map((table) => {
+              return (
+                <TableRow
+                  className={table.availability === true && "not-available"}
+                  key={nanoid(4)}
+                >
+                  <TableData key={nanoid(2)}>{table.id}</TableData>
+                  <TableData key={nanoid(2)}>{table.tableNumber}</TableData>
+                  <TableData key={nanoid(2)}>{table.capacity}</TableData>
+                  <TableData key={nanoid(2)}>{table.tableType}</TableData>
+                  <TableData key={nanoid(2)}>{table.availability}</TableData>
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
-      <Table collapsed>
+      <Table
+        collapsed
+        Title="Reservations"
+        FetchData={GET_RESERVATIONS_ACTION()}
+      >
         <TableHeader>
           <TableRow key={nanoid(4)}>
             {reversionTableHead.map((reserve) => {
@@ -180,74 +186,80 @@ const Home = () => {
           })}
         </TableBody>
       </Table>
-      <Table>
+      <Table Title="Products" FetchData={GET_PRODUCTS_ACTION()}>
         <TableHeader>
           <TableRow>
-            {productsHeadData.map((product) => {
-              return <TableHeadding key={nanoid(3)}>{product}</TableHeadding>;
-            })}
+            {productsData &&
+              productsHeadData.map((product) => {
+                return <TableHeadding key={nanoid(3)}>{product}</TableHeadding>;
+              })}
           </TableRow>
         </TableHeader>
         <TableBody>
-          {productsData.map((product) => {
-            return (
-              <TableRow key={nanoid(3)}>
-                <TableData key={nanoid(2)}>{product.id}</TableData>
-                <TableData key={nanoid(2)}>{product.productName}</TableData>
-                <TableData key={nanoid(2)}>{product.productPrice}</TableData>
-                <TableData key={nanoid(2)}>{product.categories}</TableData>
-                <TableData key={nanoid(2)}>{product.size}</TableData>
-              </TableRow>
-            );
-          })}
+          {productsData &&
+            productsData.map((product) => {
+              return (
+                <TableRow key={nanoid(3)}>
+                  <TableData key={nanoid(2)}>{product.id}</TableData>
+                  <TableData key={nanoid(2)}>{product.productName}</TableData>
+                  <TableData key={nanoid(2)}>{product.productPrice}</TableData>
+                  <TableData key={nanoid(2)}>{product.categories}</TableData>
+                  <TableData key={nanoid(2)}>{product.size}</TableData>
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
-      <Table>
+      <Table Title="Orders" FetchData={GET_ORDERS_ACTION()}>
         <TableHeader>
           <TableRow>
-            {ordersHeadData.map((order) => {
-              return <TableHeadding key={nanoid(3)}>{order}</TableHeadding>;
-            })}
+            {ordersData &&
+              ordersHeadData.map((order) => {
+                return <TableHeadding key={nanoid(3)}>{order}</TableHeadding>;
+              })}
           </TableRow>
         </TableHeader>
         <TableBody>
-          {ordersData.map((order) => {
-            return (
-              <TableRow key={nanoid(3)}>
-                <TableData key={nanoid(2)}>{order.id}</TableData>
-                <TableData key={nanoid(2)}>{order.tableNumber}</TableData>
-                <TableData key={nanoid(2)}>{order.orderName}</TableData>
-                <TableData key={nanoid(2)}>{order.category}</TableData>
-                <TableData key={nanoid(2)}>{order.quantity}</TableData>
-              </TableRow>
-            );
-          })}
+          {ordersData &&
+            ordersData.map((order) => {
+              return (
+                <TableRow key={nanoid(3)}>
+                  <TableData key={nanoid(2)}>{order.id}</TableData>
+                  <TableData key={nanoid(2)}>{order.tableNumber}</TableData>
+                  <TableData key={nanoid(2)}>{order.orderName}</TableData>
+                  <TableData key={nanoid(2)}>{order.category}</TableData>
+                  <TableData key={nanoid(2)}>{order.quantity}</TableData>
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
-      <Table>
+      <Table Title="Employees" FetchData={GET_EMPLYEES_ACTION()}>
         <TableHeader>
           <TableRow>
-            {employeesHeadData.map((emplyee) => {
-              return <TableHeadding key={nanoid(3)}>{emplyee}</TableHeadding>;
-            })}
+            {emplyeesData &&
+              employeesHeadData.map((emplyee) => {
+                return <TableHeadding key={nanoid(3)}>{emplyee}</TableHeadding>;
+              })}
           </TableRow>
         </TableHeader>
         <TableBody>
-          {emplyeesData.map((emplyee) => {
-            return (
-              <TableRow key={nanoid(3)}>
-                <TableData key={nanoid(2)}>{emplyee.id}</TableData>
-                <TableData key={nanoid(2)}>{emplyee.fullName}</TableData>
-                <TableData key={nanoid(2)}>{emplyee.brithday}</TableData>
-                <TableData key={nanoid(2)}>{emplyee.phoneNumber}</TableData>
-                <TableData key={nanoid(2)}>{emplyee.sallery}</TableData>
-                <TableData key={nanoid(2)}>{emplyee.carrir}</TableData>
-                <TableData key={nanoid(2)}>{emplyee.joinDate}</TableData>
-                <TableData key={nanoid(2)}>{emplyee.endDate}</TableData>
-                <TableData key={nanoid(2)}>{emplyee.sanctions}</TableData>
-              </TableRow>
-            );
-          })}
+          {emplyeesData &&
+            emplyeesData.map((emplyee) => {
+              return (
+                <TableRow key={nanoid(3)}>
+                  <TableData key={nanoid(2)}>{emplyee.id}</TableData>
+                  <TableData key={nanoid(2)}>{emplyee.fullName}</TableData>
+                  <TableData key={nanoid(2)}>{emplyee.brithday}</TableData>
+                  <TableData key={nanoid(2)}>{emplyee.phoneNumber}</TableData>
+                  <TableData key={nanoid(2)}>{emplyee.sallery}</TableData>
+                  <TableData key={nanoid(2)}>{emplyee.carrir}</TableData>
+                  <TableData key={nanoid(2)}>{emplyee.joinDate}</TableData>
+                  <TableData key={nanoid(2)}>{emplyee.endDate}</TableData>
+                  <TableData key={nanoid(2)}>{emplyee.sanctions}</TableData>
+                </TableRow>
+              );
+            })}
         </TableBody>
       </Table>
     </SectionWrapper>

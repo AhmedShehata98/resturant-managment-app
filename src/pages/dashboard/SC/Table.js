@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+//
 
 const TableContainer = styled.div`
   width: 100%;
@@ -66,6 +68,7 @@ const UncollabsedButton = styled.button`
 `;
 
 function Table(props) {
+  const dispatch = useDispatch();
   const [collapseTable, setCollapseTable] = useState(
     props.collapsed === true ? true : false
   );
@@ -75,6 +78,12 @@ function Table(props) {
     btn.classList.toggle("uncollabsed");
     setCollapseTable(!collapseTable);
   };
+
+  useMemo(() => {
+    if (props.FetchData && collapseTable) {
+      return dispatch(props.FetchData);
+    }
+  }, [dispatch, collapseTable]);
 
   return (
     <TableContainer>

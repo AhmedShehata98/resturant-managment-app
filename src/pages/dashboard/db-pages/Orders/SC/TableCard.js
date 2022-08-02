@@ -1,4 +1,5 @@
 import React from "react";
+import { nanoid } from "nanoid";
 
 // icons
 import TableRestaurantTwoToneIcon from "@mui/icons-material/TableRestaurantTwoTone";
@@ -21,6 +22,19 @@ const StyledTableCard = styled.div`
   border: 1px solid var(--bs-gray-400);
   background-color: var(--bs-gray-100);
   border-radius: 0.3rem;
+
+  &.not-available {
+    background-color: var(--bs-orange);
+    color: var(--bs-text);
+    opacity: 0.6;
+    pointer-events: no-drop;
+
+    > * {
+      > * {
+        color: var(--bs-black);
+      }
+    }
+  }
 `;
 
 const TableIcon = styled.span`
@@ -55,27 +69,39 @@ const Actions = styled.span`
 
 function TableCard(props) {
   const handleShowOrderModal = () => {
-    props.setshowOrder(true);
+    props.setOrderModal({
+      tableSelectedID: props.id,
+      oldOrders: props.oldOrders || {},
+      TableNumber: props.TableNumber,
+      showOrder: true,
+    });
   };
   return (
-    <StyledTableCard>
-      <TableIcon>
+    <StyledTableCard {...props}>
+      <TableIcon key={nanoid(8)}>
         <TableRestaurantTwoToneIcon fontSize="large" color="action" />
       </TableIcon>
-      <TableInformation>
-        <Chip label={props.TableName} variant="filled" icon={<LabelIcon />} />
+      <TableInformation key={nanoid(8)}>
         <Chip
+          key={nanoid(6)}
+          label={props.TableNumber}
+          variant="filled"
+          icon={<LabelIcon />}
+        />
+        <Chip
+          key={nanoid(6)}
           label={props.TableCapacity}
           variant="outlined"
           icon={<ChairIcon />}
         />
         <Chip
+          key={nanoid(6)}
           label={props.OrdersCount}
           variant="outlined"
           icon={<ShoppingCartIcon />}
         />
       </TableInformation>
-      <Actions>
+      <Actions key={nanoid(8)}>
         <Button
           type="button"
           name="add-order"

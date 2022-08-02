@@ -1,6 +1,14 @@
+import React, { useState } from "react";
 import styled from "@emotion/styled";
-import React from "react";
+
+// Redux
+import { useDispatch } from "react-redux";
+import { ADD_EXTRA_KEY } from "../../../../../Redux/Slice/TablesSlice";
+
+// components
 import Form from "../../../SC/Form";
+
+// 3rd party components
 import FormControl from "@mui/material/FormControl";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -35,9 +43,47 @@ const MddalWrapper = styled.section`
 `;
 
 const AddOrderModal = (props) => {
-  const handelAdd = () => {};
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState({
+    orderName: "",
+    quantity: "",
+    category: "Drinks",
+  });
+
+  const handleChangeFields = (event) => {
+    const key = event.target.name;
+    const value = event.target.value;
+    //
+    setFormData({ ...formData, [key]: value });
+  };
+  console.log(props.OrderModal.oldOrders);
+  const handelAdd = () => {
+    const ID = props.OrderModal.tableSelectedID;
+    const oldOrder = props.OrderModal.oldOrders;
+    const tableNumber = props.OrderModal.TableNumber;
+
+    if (oldOrder === {} || oldOrder === null) {
+      return dispatch(
+        ADD_EXTRA_KEY({
+          id: ID,
+          data: {
+            orders: [{ ...formData, tableOrderdNumber: props.tableNumber }],
+          },
+        })
+      );
+    } else {
+      return dispatch(
+        ADD_EXTRA_KEY({
+          id: ID,
+          data: {
+            orders: [{ ...formData, tableOrderdNumber: tableNumber }],
+          },
+        })
+      );
+    }
+  };
   const handelClose = () => {
-    props.setshowOrder(false);
+    props.setOrderModal({ ...props.OrderModal, showOrder: false });
   };
   return (
     <AddOrderModalBackdrop>
@@ -49,10 +95,11 @@ const AddOrderModal = (props) => {
                 <TextField
                   label="order name"
                   type={"text"}
-                  name="order name"
+                  name="orderName"
                   placeholder="Order Name ..."
                   variant="outlined"
                   size="small"
+                  onChange={(e) => handleChangeFields(e)}
                 />
               </FormControl>
             </Grid>
@@ -66,6 +113,7 @@ const AddOrderModal = (props) => {
                   placeholder="quantity ..."
                   variant="outlined"
                   size="small"
+                  onChange={(e) => handleChangeFields(e)}
                 />
               </FormControl>
             </Grid>
@@ -73,10 +121,16 @@ const AddOrderModal = (props) => {
             <Grid item xs={12} md={12} sx={{ zIndex: "100006" }}>
               <FormControl sx={{ width: "40%" }}>
                 <label id="demo-simple-select-label">categories</label>
-                <select value={"Drinks"} name="categories" label="categories">
-                  <option value={10}>Drinks</option>
-                  <option value={20}>Foods</option>
-                  <option value={30}>Thirty</option>
+                <select
+                  value={"Drinks"}
+                  name="category"
+                  label="categories"
+                  onChange={(e) => handleChangeFields(e)}
+                >
+                  <option value={"Drinks"}>Drinks</option>
+                  <option value={"Foods"}>Foods</option>
+                  <option value={"Thirty"}>Thirty</option>
+                  <option value={"Fourty"}>Fourty</option>
                 </select>
               </FormControl>
             </Grid>

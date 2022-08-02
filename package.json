@@ -1,7 +1,7 @@
 {
   "name": "resustrant-app",
   "version": "0.1.0",
-  "homepage": "https://ahmedshehata98.github.com/resturant-managment-app",
+  "homepage": "https://ahmedshehata98.github.com/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.9.3",

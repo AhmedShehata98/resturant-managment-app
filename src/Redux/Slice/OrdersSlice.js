@@ -1,17 +1,29 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { OPEN_SAKE_TOAST } from "./AppSlice";
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  updateDoc,
+  doc,
+  getDocs,
+} from "@firebase/firestore/lite";
+
+import { db } from "../../firebase/firebase-config";
 //
 //
-const API_URL = "http://localhost:9000/orders";
+const ordersCollection = collection(db, "orders");
 //
 export const GET_ORDERS_ACTION = createAsyncThunk(
   "orders/getOrders",
   async function (_, thunkApi) {
     const { rejectWithValue } = thunkApi;
     try {
-      const req = await fetch(API_URL),
-        data = req.json();
-      return data;
-      //
+      const orderRequest = await getDocs(ordersCollection);
+      const ordersSnapshot = orderRequest.docs.map((docs) => {
+        return { ...docs.data(), id: docs.id };
+      });
+      return ordersSnapshot;
     } catch (error) {
       rejectWithValue(error.message);
     }
@@ -21,35 +33,50 @@ export const GET_ORDERS_ACTION = createAsyncThunk(
 export const ADD_ORDERS_ACTION = createAsyncThunk(
   "orders/addOrders",
   async function (data, thunkApi) {
-    const { rejectWithValue } = thunkApi;
-    const incomingData = data;
+    const { rejectWithValue, dispatch } = thunkApi;
     try {
-      const req = await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            accept: "application/json",
-          },
-          body: incomingData,
-        }),
-        data = req.json();
+      const addOrders = await addDoc(db, data);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: ` the order :${data.orderName} is added success .`,
+          severity: "success",
+        })
+      );
       return data;
       //
     } catch (error) {
       rejectWithValue(error.message);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: ` Oops , ${error.message}`,
+          severity: "error",
+        })
+      );
     }
   }
 );
 export const DELETE_EXISTING_ORDER_ACTION = createAsyncThunk(
   "orders/deleteOrder",
   async function (id, thunkApi) {
-    const { rejectWithValue } = thunkApi;
-    const incomingID = id;
+    const { rejectWithValue, dispatch } = thunkApi;
+
     try {
-      const req = await fetch(API_URL + "/" + incomingID, { method: "DELETE" });
-      return await req.json();
+      const deleteTarget = doc(db, "orders", id);
+      const deleteOrder = await deleteDoc(deleteTarget);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: "Order deleted successfully.",
+          severity: "success",
+        })
+      );
     } catch (error) {
       rejectWithValue(error.message);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: "Ooops , something went wrong.",
+          severity: "error",
+        })
+      );
     }
   }
 );

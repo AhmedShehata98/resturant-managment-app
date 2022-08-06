@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 //3rd party components
 import Container from "react-bootstrap/esm/Container";
-import Row from "react-bootstrap/esm/Row";
-import Col from "react-bootstrap/esm/Col";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
@@ -29,7 +28,7 @@ const Login = () => {
     "d-flex justify-content-center align-items-center flex-row text-capitalize"
   );
   const [Logo, setLogo] = useState("");
-  const [IsLoading, setIsLoading] = useState(true);
+  const [IsLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     try {
@@ -107,28 +106,30 @@ const Login = () => {
                 style={{ backgroundColor: "var(--bs-gray-200)" }}
               />
             </FloatingLabel>
-            <Button
-              className="w-100 mt-1"
-              type="submit"
-              variant="primary"
-              size="sm"
-              disabled={IsLoading}
-            >
-              {IsLoading ? (
-                <span className={spinnerClassesRef.current}>
-                  <small className="me-3">Signing in ...</small>
-                  <Spinner
-                    as="svg"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                  />
-                </span>
-              ) : (
-                "Login"
-              )}
-            </Button>
+            <Link to="/dashboard">
+              <Button
+                className="w-100 mt-1"
+                type="submit"
+                variant="primary"
+                size="sm"
+                disabled={IsLoading}
+              >
+                {IsLoading ? (
+                  <span className={spinnerClassesRef.current}>
+                    <small className="me-3">Signing in ...</small>
+                    <Spinner
+                      as="svg"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                  </span>
+                ) : (
+                  "Login"
+                )}
+              </Button>
+            </Link>
           </Form>
         </LoginWrapper>
       </Container>

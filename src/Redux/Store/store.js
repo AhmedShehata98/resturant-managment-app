@@ -4,6 +4,7 @@ import ReservationsReducer from "../Slice/ReservationsSlice";
 import ProductsReducer from "../Slice/ProductsSlice";
 import OrdersReducer from "../Slice/OrdersSlice";
 import EmloyeesReducer from "../Slice/EmloyeesSlice";
+import AppReducer from "../Slice/AppSlice";
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     products: ProductsReducer,
     orders: OrdersReducer,
     employees: EmloyeesReducer,
+    app: AppReducer,
   },
 });
 

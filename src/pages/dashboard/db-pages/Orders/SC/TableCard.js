@@ -70,12 +70,22 @@ const Actions = styled.span`
 function TableCard(props) {
   const handleShowOrderModal = () => {
     props.setOrderModal({
-      tableSelectedID: props.id,
-      oldOrders: props.oldOrders || {},
-      TableNumber: props.TableNumber,
       showOrder: true,
+      oldOrders: props.Orders.length === 0 ? null : props.Orders,
+      TableNumber: props.TableNumber,
+      tableSelectedID: props.id,
     });
   };
+
+  const handleShowCheckout = () => {
+    props.setCheckoutModal({
+      showCheckout: true,
+      ordersList: props.Orders || [],
+      tableNumber: props.TableNumber,
+      tableSelectedID: props.id,
+    });
+  };
+
   return (
     <StyledTableCard {...props}>
       <TableIcon key={nanoid(8)}>
@@ -90,13 +100,13 @@ function TableCard(props) {
         />
         <Chip
           key={nanoid(6)}
-          label={props.TableCapacity}
+          label={props.Capacity}
           variant="outlined"
           icon={<ChairIcon />}
         />
         <Chip
           key={nanoid(6)}
-          label={props.OrdersCount}
+          label={props.Orders.length}
           variant="outlined"
           icon={<ShoppingCartIcon />}
         />
@@ -111,7 +121,13 @@ function TableCard(props) {
         >
           <small>add order</small>
         </Button>
-        <Button type="button" name="checkout" variant="outlined" size="small">
+        <Button
+          type="button"
+          name="checkout"
+          variant="outlined"
+          size="small"
+          onClick={() => handleShowCheckout()}
+        >
           <small>checkout</small>
         </Button>
       </Actions>

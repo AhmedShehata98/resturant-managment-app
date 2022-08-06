@@ -24,6 +24,7 @@ import LoadingModule from "../../../../components/LoadingModule/LoadingModule";
 import { Button } from "@mui/material";
 import { GET_ORDERS_ACTION } from "../../../../Redux/Slice/OrdersSlice";
 const AddOrderModal = lazy(() => import("./SC/AddOrderModal"));
+const CheckoutTableModal = lazy(() => import("./SC/CheckoutTableModal"));
 
 const Order = () => {
   const dispatch = useDispatch();
@@ -37,12 +38,30 @@ const Order = () => {
     TableNumber: 0,
     tableSelectedID: 0,
   });
-  const container = document.getElementById("orders-modal");
+  const [CheckoutModal, setCheckoutModal] = useState({
+    showCheckout: false,
+    ordersList: [],
+    tableNumber: 0,
+    tableSelectedID: 0,
+  });
+  //
+  const OrderContainer = document.getElementById("orders-modal");
+  const ChikingoutContainer = document.getElementById("checkout-modal");
   const orderFormModal = createPortal(
     <Suspense>
       <AddOrderModal setOrderModal={setOrderModal} OrderModal={OrderModal} />
     </Suspense>,
-    container
+    OrderContainer
+  );
+  const CheckingoutModal = createPortal(
+    <Suspense>
+      <CheckoutTableModal
+        setCheckoutModal={setCheckoutModal}
+        OrderModal={CheckoutModal}
+        Title={"Checkout Report"}
+      />
+    </Suspense>,
+    ChikingoutContainer
   );
 
   useEffect(() => {
@@ -51,16 +70,20 @@ const Order = () => {
 
   const ordersHeadList = [
     "no.",
-    "table number",
     "order name",
-    "category",
+    "order price",
     "quantity",
+    "category",
+    "size",
+    "table number",
     "delete",
     "edit",
   ];
 
   return (
     <SectionWrapper>
+      {OrderModal.showOrder && orderFormModal}
+      {CheckoutModal.showCheckout && CheckingoutModal}
       <TablesCardsWrapper>
         {tablesData &&
           tablesData.map((tableCard) => {
@@ -71,18 +94,19 @@ const Order = () => {
                   className={
                     tableCard.availability === false ? "not-available" : null
                   }
-                  setOrderModal={setOrderModal}
-                  TableNumber={tableCard.tableNumber}
-                  oldOrders={tableCard.orders ? tableCard.orders : null}
                   id={tableCard.id}
-                  TableCapacity={tableCard.capacity}
-                  OrdersCount={tableCard.orders ? tableCard.orders.length : 0}
+                  setOrderModal={setOrderModal}
+                  setCheckoutModal={setCheckoutModal}
+                  CheckoutModal={CheckoutModal}
+                  TableNumber={tableCard.tableNumber}
+                  Capacity={tableCard.capacity}
+                  Orders={tableCard.orders}
                 />
               </>
             );
           })}
       </TablesCardsWrapper>
-      {OrderModal.showOrder && orderFormModal}
+
       <Table Title="Orders" FetchData={GET_ORDERS_ACTION()}>
         <TableHeader>
           <TableRow>
@@ -96,10 +120,12 @@ const Order = () => {
             return (
               <TableRow key={nanoid(3)}>
                 <TableData key={nanoid(3)}>{order.id}</TableData>
-                <TableData key={nanoid(3)}>{order.tableNumber}</TableData>
                 <TableData key={nanoid(3)}>{order.orderName}</TableData>
-                <TableData key={nanoid(3)}>{order.category}</TableData>
+                <TableData key={nanoid(3)}>{order.orderPrice} L.E</TableData>
                 <TableData key={nanoid(3)}>{order.quantity}</TableData>
+                <TableData key={nanoid(3)}>{order.category}</TableData>
+                <TableData key={nanoid(3)}>{order.size}</TableData>
+                <TableData key={nanoid(3)}>{order.tableNumber}</TableData>
                 <TableData key={nanoid(3)}>
                   <Button variant="text" size="small">
                     <DeleteOutlined color="error" fontSize="small" />

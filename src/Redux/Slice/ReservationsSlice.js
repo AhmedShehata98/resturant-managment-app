@@ -1,20 +1,39 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { OPEN_SAKE_TOAST } from "./AppSlice";
+import { db } from "../../firebase/firebase-config";
+
+import {
+  collection,
+  doc,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+} from "@firebase/firestore/lite";
 //
 //
-const API_URL = "http://127.0.0.1:9000/reservations";
+const reservationsCollection = collection(db, "Reservations");
 //
 //
 export const GET_RESERVATIONS_ACTION = createAsyncThunk(
   "reservations/getData",
   async function (_, thunkApi) {
-    const { rejectWithValue } = thunkApi;
+    const { rejectWithValue, dispatch } = thunkApi;
     try {
-      const req = await fetch(API_URL),
-        data = req.json();
-      return data;
+      const requestedData = getDocs(reservationsCollection);
+      const snapshotData = (await requestedData).docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      });
+      return snapshotData;
       //
     } catch (error) {
       rejectWithValue(error.message);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `Oops ! , ${error.message}`,
+          severity: "error",
+        })
+      );
     }
   }
 );
@@ -22,23 +41,26 @@ export const GET_RESERVATIONS_ACTION = createAsyncThunk(
 export const ADD_RESERVATION_ACTION = createAsyncThunk(
   "reservations/addReservation",
   async function (data, thunkApi) {
-    const { rejectWithValue } = thunkApi;
-    const incomingData = data;
+    const { rejectWithValue, dispatch } = thunkApi;
 
     try {
-      const req = await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            accept: "application/json",
-          },
-          body: incomingData,
-        }),
-        data = req.json();
+      const addReservation = await addDoc(reservationsCollection, data);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `The booking for the customer: ${data.customerName} has been successfully added , `,
+          severity: "success",
+        })
+      );
       return data;
       //
     } catch (error) {
       rejectWithValue(error.message);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `Oops ! , ${error.message}`,
+          severity: "error",
+        })
+      );
     }
   }
 );
@@ -46,14 +68,25 @@ export const ADD_RESERVATION_ACTION = createAsyncThunk(
 export const DELETE_EXISTING_RESERVATION_ACTION = createAsyncThunk(
   "reservations/deleteReservation",
   async function (id, thunkApi) {
-    const { rejectWithValue } = thunkApi;
-    const incomingID = id;
+    const { rejectWithValue, dispatch } = thunkApi;
 
     try {
-      const req = await fetch(API_URL + "/" + incomingID, { method: "DELETE" });
-      return await req.json();
+      const deleteTarget = doc(db, "Reservations", id);
+      await deleteDoc(deleteTarget);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: "Reservations deleted successfully",
+          severity: "success",
+        })
+      );
     } catch (error) {
       rejectWithValue(error.message);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `Oops ! , ${error.message}`,
+          severity: "error",
+        })
+      );
     }
   }
 );

@@ -1,5 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
+
+// 3rd party components
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 //components
 import Tooltip from "@mui/material/Tooltip";
@@ -13,8 +17,11 @@ import SearchField from "./SC/SearchField";
 import WelcomeHeadding from "./SC/WelcomeHeadding";
 import LogoComponent from "../../components/Header/SC/Logo";
 
-//icons
+//Redux
+import { useSelector, useDispatch } from "react-redux";
+import { CLOSE_SNAKE_TOAST, OPEN_SAKE_TOAST } from "../../Redux/Slice/AppSlice";
 
+//icons
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import TableRestaurantOutlinedIcon from "@mui/icons-material/TableRestaurantOutlined";
 import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
@@ -26,11 +33,22 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import AddShoppingCartOutlinedIcon from "@mui/icons-material/AddShoppingCartOutlined";
 
 const Dashboard = () => {
+  const {
+    app: { isOpenToast, toastMessage, toastMessageSeverity },
+  } = useSelector((state) => state);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   useEffect(() => {
     navigate("home");
   }, []);
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    dispatch(CLOSE_SNAKE_TOAST());
+  };
   return (
     <DashboardWrapper>
       <Asidebar className="border shadow">
@@ -99,6 +117,19 @@ const Dashboard = () => {
           <SearchField />
         </DashboardHeader>
         <Outlet />
+        <Snackbar
+          open={isOpenToast}
+          autoHideDuration={2000}
+          onClose={handleClose}
+        >
+          <Alert
+            variant="filled"
+            severity={toastMessageSeverity}
+            sx={{ width: "100%" }}
+          >
+            {toastMessage}
+          </Alert>
+        </Snackbar>
       </DashboardSection>
     </DashboardWrapper>
   );

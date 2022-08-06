@@ -144,7 +144,7 @@ function AddTable() {
   };
 
   const sendChangesRequest = (id, data) => {
-    dispatch(EDIT_TABLE_ACTION({ id, data: JSON.stringify(data) }));
+    dispatch(EDIT_TABLE_ACTION({ id, data: data }));
     resetFields();
     setEditMode({
       id: 0,

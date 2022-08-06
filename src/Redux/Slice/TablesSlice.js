@@ -1,17 +1,37 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { OPEN_SAKE_TOAST } from "./AppSlice";
+import { db } from "../../firebase/firebase-config";
 
-const API_URL = "http://127.0.0.1:9000/tables";
+import {
+  collection,
+  doc,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+} from "@firebase/firestore/lite";
+//
+const tablesCollection = collection(db, "tables");
 //
 export const GET_TABLES_ACTION = createAsyncThunk(
   "tables/getdata",
   async function (_, thunkApi) {
-    const { rejectWithValue } = thunkApi;
+    const { dispatch, rejectWithValue } = thunkApi;
     try {
-      const req = await fetch(API_URL);
-      const data = await req.json();
-      return data;
+      const requestedData = await getDocs(tablesCollection);
+      const snapshotData = requestedData.docs.map((doc) => {
+        return { id: doc.id, ...doc.data() };
+      });
+
+      return snapshotData;
     } catch (error) {
       rejectWithValue(error.message);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `Oops ! , ${error.message}`,
+          severity: "error",
+        })
+      );
     }
   }
 );
@@ -19,23 +39,26 @@ export const GET_TABLES_ACTION = createAsyncThunk(
 export const ADD_NEW_TABLE_ACTION = createAsyncThunk(
   "tables/addtable",
   async function (data, thunkApi) {
-    const { rejectWithValue } = thunkApi;
-    const incomingData = data;
+    const { rejectWithValue, dispatch } = thunkApi;
     //
     try {
-      const req = await fetch(API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-        body: incomingData,
-      });
-      const data = await req.json();
+      await addDoc(tablesCollection, data);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `Table number : ${data.tableNumber} was added successfully`,
+          severity: "success",
+        })
+      );
       return data;
       //
     } catch (error) {
       rejectWithValue(error.message);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `Oops ! , ${error.message}`,
+          severity: "error",
+        })
+      );
     }
   }
 );
@@ -43,56 +66,54 @@ export const ADD_NEW_TABLE_ACTION = createAsyncThunk(
 export const DELETE_EXISTING_TABLE_ACTION = createAsyncThunk(
   "table/deleteTable",
   async function (id, thunkApi) {
-    const { rejectWithValue } = thunkApi;
-    const incomingID = id;
+    const { dispatch, rejectWithValue } = thunkApi;
+
     try {
-      const req = await fetch(API_URL + "/" + incomingID, {
-        method: "DELETE",
-      });
-      return await req.json();
+      const deleteTableTarget = doc(db, "tables", id);
+      await deleteDoc(deleteTableTarget);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `Table  was Delete successfully`,
+          severity: "success",
+        })
+      );
     } catch (error) {
       rejectWithValue(error.message);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `Oops ! , ${error.message}`,
+          severity: "error",
+        })
+      );
     }
   }
 );
 export const EDIT_TABLE_ACTION = createAsyncThunk(
   "tables,editTable",
   async function ({ id, data }, thunkApi) {
-    const { rejectWithValue } = thunkApi;
+    const { rejectWithValue, dispatch } = thunkApi;
     try {
-      const req = await fetch(API_URL + "/" + id, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-        body: data,
-      });
-      return await req.json();
+      const tableTarget = doc(db, "tables", id);
+      await addDoc(tableTarget, data);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `Table data was Updated successfully`,
+          severity: "success",
+        })
+      );
+      return data;
     } catch (error) {
       rejectWithValue(error.message);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `Oops ! , ${error.message}`,
+          severity: "error",
+        })
+      );
     }
   }
 );
 
-export const ADD_EXTRA_KEY = createAsyncThunk(
-  "tables/addExtra",
-  async function ({ id, data }, thunkapi) {
-    const { rejectWithValue } = thunkapi;
-    try {
-      const req = await fetch(API_URL + "/" + id, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-    } catch (err) {
-      rejectWithValue(err.message);
-    }
-  }
-);
 //
 //
 
@@ -179,23 +200,6 @@ export const tablesSlice = createSlice({
       state.tablesData = newTablesData;
     },
     [EDIT_TABLE_ACTION.rejected]: function (state, action) {
-      state.isLoading = false;
-      state.isError = true;
-      state.errorMessage = action.payload;
-    },
-    // put extra keys
-    [ADD_EXTRA_KEY.pending]: function (state) {
-      state.isLoading = true;
-      state.isError = false;
-      state.errorMessage = "";
-    },
-    [ADD_EXTRA_KEY.fulfilled]: function (state, action) {
-      state.isLoading = false;
-      state.isError = false;
-      state.errorMessage = "";
-      console.log(action);
-    },
-    [ADD_EXTRA_KEY.rejected]: function (state, action) {
       state.isLoading = false;
       state.isError = true;
       state.errorMessage = action.payload;

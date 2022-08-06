@@ -150,7 +150,7 @@ const AddEmployes = () => {
   };
 
   const handleSendChangesRequest = (id, data) => {
-    dispatch(EDIT_EMPLOYEE_ACTION({ id, data: JSON.stringify(data) }));
+    dispatch(EDIT_EMPLOYEE_ACTION({ id, data: data }));
     setEditMode({ mode: false, id: 0 });
     resetInputs();
   };

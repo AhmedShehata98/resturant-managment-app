@@ -1,17 +1,35 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-
-const API_URL = "http://localhost:9000/emplyees";
+import { db } from "../../firebase/firebase-config";
+import { OPEN_SAKE_TOAST } from "./AppSlice";
+import {
+  collection,
+  doc,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+} from "@firebase/firestore/lite";
+//
+const employeesCollection = collection(db, "employees");
 //
 export const GET_EMPLYEES_ACTION = createAsyncThunk(
   "emplyees/getEmplyees",
   async function (_, thunkApi) {
-    const { rejectWithValue } = thunkApi;
+    const { rejectWithValue, dispatch } = thunkApi;
     try {
-      const req = await fetch(API_URL),
-        data = await req.json();
-      return data;
+      const requestEmployeesData = await getDocs(employeesCollection);
+      const snapshotData = requestEmployeesData.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id };
+      });
+      return snapshotData;
     } catch (error) {
       rejectWithValue(error.message);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: ` Oops ${error.message}`,
+          severity: "error",
+        })
+      );
     }
   }
 );
@@ -19,55 +37,73 @@ export const GET_EMPLYEES_ACTION = createAsyncThunk(
 export const ADD_EMPLYEES_ACTION = createAsyncThunk(
   "emplyees/addEmplyees",
   async function (data, thunkApi) {
-    const incomingData = data;
-    const { rejectWithValue } = thunkApi;
+    const { rejectWithValue, dispatch } = thunkApi;
     try {
-      const req = await fetch(API_URL, {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            accept: "application/json",
-          },
-          body: incomingData,
-        }),
-        data = await req.json();
+      const addEmplyees = await addDoc(employeesCollection, data);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `The employee ${data.fullName} is added Successfully`,
+          severity: "success",
+        })
+      );
       return data;
     } catch (error) {
       rejectWithValue(error.message);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `Ooops , Error : ${error.message}`,
+          severity: "error",
+        })
+      );
     }
   }
 );
 export const DELETE_EXISTING_EMPLOYEE_ACTION = createAsyncThunk(
   "employees/deleteemployee",
   async function (id, thunkApi) {
-    const { rejectWithValue } = thunkApi;
-    const incomingID = id;
-
+    const { rejectWithValue, dispatch } = thunkApi;
     try {
-      const req = await fetch(API_URL + "/" + incomingID, { method: "DELETE" });
-      return await req.json();
+      const deleteTarget = doc(db, "employees", id);
+      const deleteEmployee = await deleteDoc(deleteTarget);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: " Employee is Deleted from System successfully",
+          severity: "success",
+        })
+      );
     } catch (error) {
       rejectWithValue(error.message);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `Oops ! , ${error.message}`,
+          severity: "error",
+        })
+      );
     }
   }
 );
 export const EDIT_EMPLOYEE_ACTION = createAsyncThunk(
   "employees/editEmployee",
   async function ({ id, data }, thunkApi) {
-    const { rejectWithValue } = thunkApi;
+    const { rejectWithValue, dispatch } = thunkApi;
     try {
-      const req = await fetch(API_URL + "/" + id, {
-        method: "PATCH",
-        headers: {
-          "content-type": "application/json",
-          accept: "application/json",
-        },
-        body: data,
-      });
-
-      return await req.json();
+      const updateTarget = doc(db, "employees", id);
+      const updateEmployeeInfo = updateDoc(updateTarget, data);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `employee named : ${data.fullName} is updated info's successfully`,
+          severity: "success",
+        })
+      );
+      return data;
     } catch (error) {
       rejectWithValue(error.message);
+      dispatch(
+        OPEN_SAKE_TOAST({
+          message: `Oops ! ,  : ${error.message} `,
+          severity: "error",
+        })
+      );
     }
   }
 );

@@ -45,28 +45,14 @@
       "tableNumber": "2",
       "capacity": "4",
       "tableType": "VIP",
-      "availability": true,
+      "availability": false,
       "orders": [
         {
-          "orderName": "something 1125",
-          "quantity": "5",
-          "category": "Thirty",
-          "ID": 1
-        },
-        {
-          "orderName": "something 1",
-          "quantity": "24",
-          "category": "Thirty"
-        },
-        {
-          "orderName": "something 9000",
-          "quantity": "2",
-          "category": "Fourty"
-        },
-        {
-          "orderName": "something 1",
-          "quantity": "5",
-          "category": "Drinks"
+          "orderName": "f",
+          "orderPrice": "",
+          "quantity": "",
+          "category": "Drinks",
+          "size": "Select Order Size"
         }
       ]
     },
@@ -76,14 +62,7 @@
       "tableType": "Non-Smooking",
       "availability": true,
       "id": 4,
-      "orders": [
-        {
-          "orderName": "something 91",
-          "quantity": "5",
-          "category": "Thirty",
-          "tableOrderdNumber": "6"
-        }
-      ]
+      "orders": []
     }
   ],
   "emplyees": [
@@ -101,11 +80,14 @@
   ],
   "orders": [
     {
-      "id": 1,
-      "tableNumber": "2",
-      "orderName": " something 1",
+      "orderName": "BlackTea",
+      "orderPrice": "15",
+      "quantity": "6",
       "category": "Drinks",
-      "quantity": "3"
+      "size": "Small",
+      "tableNumber": "6",
+      "tableId": 4,
+      "id": 2
     }
   ]
 }

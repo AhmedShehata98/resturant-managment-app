@@ -56,7 +56,6 @@ function AddProduct() {
     id: 0,
   });
   const productTableHeadsArr = [
-    "no.",
     "product name",
     "product price",
     "category",
@@ -88,7 +87,7 @@ function AddProduct() {
       categories: formData.categories,
       size: formData.size,
     };
-    dispatch(ADD_PRODUCTS_ACTION(JSON.stringify(payload)));
+    dispatch(ADD_PRODUCTS_ACTION(payload));
     resetInputs();
   };
 
@@ -116,7 +115,7 @@ function AddProduct() {
     setEditMode({ id, mode: true });
   };
   function handleSendProductRequest(id, data) {
-    dispatch(EDIT_PRODUCT_ACTION({ id, data: JSON.stringify(data) }));
+    dispatch(EDIT_PRODUCT_ACTION({ id, data: data }));
     setEditMode({ id: 0, mode: false });
     resetInputs();
   }
@@ -251,7 +250,6 @@ function AddProduct() {
               {productsData.map((product) => {
                 return (
                   <TableRow key={nanoid(3)}>
-                    <TableData key={nanoid(2)}>{product.id}</TableData>
                     <TableData key={nanoid(2)}>{product.productName}</TableData>
                     <TableData key={nanoid(2)}>
                       {product.productPrice}

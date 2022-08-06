@@ -162,7 +162,7 @@ const Home = () => {
       <Table
         collapsed
         Title="Reservations"
-        FetchData={GET_RESERVATIONS_ACTION()}
+        // FetchData={GET_RESERVATIONS_ACTION()}
       >
         <TableHeader>
           <TableRow key={nanoid(4)}>

@@ -119,7 +119,7 @@ const Dashboard = () => {
         <Outlet />
         <Snackbar
           open={isOpenToast}
-          autoHideDuration={2000}
+          autoHideDuration={3000}
           onClose={handleClose}
         >
           <Alert

@@ -107,7 +107,7 @@ function AddTable() {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(ADD_NEW_TABLE_ACTION(JSON.stringify(formData)));
+    dispatch(ADD_NEW_TABLE_ACTION(formData));
     handleResetAll();
   };
 

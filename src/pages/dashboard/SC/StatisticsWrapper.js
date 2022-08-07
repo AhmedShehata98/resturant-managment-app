@@ -14,7 +14,7 @@ const StyledStatisticsWrapper = styled.div`
   ${(props) =>
     props.children.length > 3
       ? "justify-content: space-between"
-      : "justify-content : flex-end"};
+      : "justify-content : flex-start"};
   margin-block-end: 1rem;
 
   @media (max-width: 992px) {

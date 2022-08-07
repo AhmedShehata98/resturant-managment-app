@@ -15,7 +15,6 @@ import TableBody from "../../SC/TableBody";
 import Form from "../../SC/Form";
 
 // 3rd party components
-import Card from "@mui/material/Card";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
@@ -93,15 +92,7 @@ const AddEmployes = () => {
   };
   const onSubmit = (e) => {
     e.preventDefault();
-    // const fd = new FormData();
-    // fd.append("full-name", formData["full-name"]);
-    // fd.append("Work-end-date", formData["Work-end-date"]);
-    // fd.append("phone-number", formData["phone-number"]);
-    // fd.append("brithday", formData["brithday"]);
-    // fd.append("carrer", formData["carrer"]);
-    // fd.append("JoinDate", formData["JoinDate"]);
-    // fd.append("Sanctions", formData["Sanctions"]);
-    // fd.append("salery", formData["salery"]);
+
     const fd = {
       fullName: formData.fullName,
       endDate: formData.endDate,
@@ -113,7 +104,7 @@ const AddEmployes = () => {
       salary: formData.salary,
     };
 
-    dispatch(ADD_EMPLYEES_ACTION(JSON.stringify(fd)));
+    dispatch(ADD_EMPLYEES_ACTION(fd));
     resetInputs();
   };
 
@@ -157,165 +148,172 @@ const AddEmployes = () => {
 
   return (
     <SectionWrapper>
-      <StatisticsWrapper flexBox>
-        <Form>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={12}>
-              <FormControl
-                sx={{
-                  width: "100%",
-                }}
-              >
-                <TextField
-                  type="text"
-                  name="fullName"
-                  id="fullName"
-                  placeholder="Employee Full Name .."
-                  variant="filled"
-                  value={formData.fullName}
-                  onChange={(e) => handleGetInputValue(e)}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl sx={{ width: "100%" }}>
-                <TextField
-                  label="brithday"
-                  name="brithday"
-                  type={"date"}
-                  value={formData.brithday}
-                  onChange={(e) => handleGetInputValue(e)}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl sx={{ width: "100%" }}>
-                <TextField
-                  label="phone number"
-                  name="phoneNumber"
-                  type={"number"}
-                  placeholder="+201000000000"
-                  value={formData.phoneNumber}
-                  onChange={(e) => handleGetInputValue(e)}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl sx={{ width: "100%" }}>
-                <InputLabel> carrer</InputLabel>
-                <Select
-                  label="carier"
-                  name="carier"
-                  id="employeeCarier"
-                  value={formData.carier}
-                  onChange={(e) => handleGetInputValue(e)}
+      <Grid container>
+        <Grid item sm={12} md={12} lg={6}>
+          <Form FullWidth>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={12}>
+                <FormControl
+                  sx={{
+                    width: "100%",
+                  }}
                 >
-                  <MenuItem value="GeneralManager">General Manager</MenuItem>
-                  <MenuItem value="Assistant-Manager">
-                    Assistant Manager
-                  </MenuItem>
-                  <MenuItem value="Executive-Chef">Executive Chef</MenuItem>
-                  <MenuItem value="Sous-Chef">Sous Chef</MenuItem>
-                  <MenuItem value="Kitchen-Manager">Kitchen Manager</MenuItem>
-                  <MenuItem value="Fast-Food-Cook">Fast Food Cook</MenuItem>
-                  <MenuItem value="Short-Order-Cook">Short Order Cook</MenuItem>
-                  <MenuItem value="Prep cook">Prep cook</MenuItem>
-                  <MenuItem value="Server">Server</MenuItem>
-                  <MenuItem value="Runner">Runner</MenuItem>
-                  <MenuItem value="Barista">Barista</MenuItem>
-                  <MenuItem value="Dishwasher">Dishwasher</MenuItem>
-                </Select>
-              </FormControl>
+                  <TextField
+                    type="text"
+                    name="fullName"
+                    id="fullName"
+                    placeholder="Employee Full Name .."
+                    variant="filled"
+                    value={formData.fullName}
+                    onChange={(e) => handleGetInputValue(e)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControl sx={{ width: "100%" }}>
+                  <TextField
+                    label="brithday"
+                    name="brithday"
+                    type={"date"}
+                    value={formData.brithday}
+                    onChange={(e) => handleGetInputValue(e)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControl sx={{ width: "100%" }}>
+                  <TextField
+                    label="phone number"
+                    name="phoneNumber"
+                    type={"number"}
+                    placeholder="+201000000000"
+                    value={formData.phoneNumber}
+                    onChange={(e) => handleGetInputValue(e)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControl sx={{ width: "100%" }}>
+                  <InputLabel> carrer</InputLabel>
+                  <Select
+                    label="carier"
+                    name="carier"
+                    id="employeeCarier"
+                    value={formData.carier}
+                    onChange={(e) => handleGetInputValue(e)}
+                  >
+                    <MenuItem value="GeneralManager">General Manager</MenuItem>
+                    <MenuItem value="Assistant-Manager">
+                      Assistant Manager
+                    </MenuItem>
+                    <MenuItem value="Executive-Chef">Executive Chef</MenuItem>
+                    <MenuItem value="Sous-Chef">Sous Chef</MenuItem>
+                    <MenuItem value="Kitchen-Manager">Kitchen Manager</MenuItem>
+                    <MenuItem value="Fast-Food-Cook">Fast Food Cook</MenuItem>
+                    <MenuItem value="Short-Order-Cook">
+                      Short Order Cook
+                    </MenuItem>
+                    <MenuItem value="Prep cook">Prep cook</MenuItem>
+                    <MenuItem value="Server">Server</MenuItem>
+                    <MenuItem value="Runner">Runner</MenuItem>
+                    <MenuItem value="Barista">Barista</MenuItem>
+                    <MenuItem value="Dishwasher">Dishwasher</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControl sx={{ width: "100%" }}>
+                  <TextField
+                    type={"number"}
+                    placeholder="8000 L.E"
+                    label="salary"
+                    name="salary"
+                    value={formData.salary}
+                    onChange={(e) => handleGetInputValue(e)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControl sx={{ width: "100%" }}>
+                  <TextField
+                    type={"date"}
+                    label="Join Date"
+                    name="JoinDate"
+                    value={formData["JoinDate"]}
+                    onChange={(e) => handleGetInputValue(e)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControl sx={{ width: "100%" }}>
+                  <TextField
+                    type={"date"}
+                    label="Work end date"
+                    name="endDate"
+                    value={formData.endDate}
+                    onChange={(e) => handleGetInputValue(e)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControl sx={{ width: "100%" }}>
+                  <TextField
+                    type={"text"}
+                    placeholder="100 L.E"
+                    label="Sanctions"
+                    name="Sanctions"
+                    value={formData.Sanctions}
+                    onChange={(e) => handleGetInputValue(e)}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Button
+                  sx={{ width: "100%" }}
+                  type="button"
+                  variant="contained"
+                  color={editMode.mode === true ? "warning" : "primary"}
+                  onClick={(e) => {
+                    editMode.mode === true
+                      ? handleSendChangesRequest(editMode.id, formData)
+                      : onSubmit(e);
+                  }}
+                >
+                  {editMode.mode === true ? "update" : "add employee"}
+                </Button>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Button
+                  sx={{ width: "100%" }}
+                  type="reset"
+                  variant="outlined"
+                  onClick={() => resetInputs()}
+                >
+                  reset
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl sx={{ width: "100%" }}>
-                <TextField
-                  type={"number"}
-                  placeholder="8000 L.E"
-                  label="salary"
-                  name="salary"
-                  value={formData.salary}
-                  onChange={(e) => handleGetInputValue(e)}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl sx={{ width: "100%" }}>
-                <TextField
-                  type={"date"}
-                  label="Join Date"
-                  name="JoinDate"
-                  value={formData["JoinDate"]}
-                  onChange={(e) => handleGetInputValue(e)}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl sx={{ width: "100%" }}>
-                <TextField
-                  type={"date"}
-                  label="Work end date"
-                  name="endDate"
-                  value={formData.endDate}
-                  onChange={(e) => handleGetInputValue(e)}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FormControl sx={{ width: "100%" }}>
-                <TextField
-                  type={"text"}
-                  placeholder="100 L.E"
-                  label="Sanctions"
-                  name="Sanctions"
-                  value={formData.Sanctions}
-                  onChange={(e) => handleGetInputValue(e)}
-                />
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Button
-                sx={{ width: "100%" }}
-                type="button"
-                variant="contained"
-                color={editMode.mode === true ? "warning" : "primary"}
-                onClick={(e) => {
-                  editMode.mode === true
-                    ? handleSendChangesRequest(editMode.id, formData)
-                    : onSubmit(e);
-                }}
-              >
-                {editMode.mode === true ? "update" : "add employee"}
-              </Button>
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Button
-                sx={{ width: "100%" }}
-                type="reset"
-                variant="outlined"
-                onClick={() => resetInputs()}
-              >
-                reset
-              </Button>
-            </Grid>
-          </Grid>
-        </Form>
-
-        <Statistic
-          Title="total emploees"
-          Count="1200"
-          Persent="95"
-          ProgressValue="95%"
-          IconElement={<PeopleAltOutlinedIcon />}
-        />
-        <Statistic
-          Title="emploees Contract renewal"
-          Count="1200"
-          Persent="95"
-          ProgressValue="95%"
-          IconElement={<PeopleAltOutlinedIcon />}
-        />
-      </StatisticsWrapper>
+          </Form>
+        </Grid>
+        <Grid item xs={12} md={12} lg={6}>
+          <StatisticsWrapper flexBox>
+            <Statistic
+              Title="total emploees"
+              Count="1200"
+              Persent="95"
+              ProgressValue="95%"
+              IconElement={<PeopleAltOutlinedIcon />}
+            />
+            <Statistic
+              Title="emploees Contract renewal"
+              Count="1200"
+              Persent="95"
+              ProgressValue="95%"
+              IconElement={<PeopleAltOutlinedIcon />}
+            />
+          </StatisticsWrapper>
+        </Grid>
+      </Grid>
 
       <Table Title="Employees List" FetchData={GET_EMPLYEES_ACTION()}>
         <TableHeader>

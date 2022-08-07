@@ -32,6 +32,9 @@ const Order = () => {
     orders: { ordersData },
     tables: { tablesData },
   } = useSelector((state) => state);
+  useEffect(() => {
+    dispatch(GET_TABLES_ACTION());
+  }, [dispatch]);
   const [OrderModal, setOrderModal] = useState({
     showOrder: false,
     oldOrders: [],
@@ -64,12 +67,7 @@ const Order = () => {
     ChikingoutContainer
   );
 
-  useEffect(() => {
-    dispatch(GET_TABLES_ACTION());
-  }, [dispatch]);
-
   const ordersHeadList = [
-    "no.",
     "order name",
     "order price",
     "quantity",
@@ -119,7 +117,6 @@ const Order = () => {
           {ordersData.map((order) => {
             return (
               <TableRow key={nanoid(3)}>
-                <TableData key={nanoid(3)}>{order.id}</TableData>
                 <TableData key={nanoid(3)}>{order.orderName}</TableData>
                 <TableData key={nanoid(3)}>{order.orderPrice} L.E</TableData>
                 <TableData key={nanoid(3)}>{order.quantity}</TableData>

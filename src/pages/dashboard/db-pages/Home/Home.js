@@ -51,22 +51,14 @@ const Home = () => {
   }, [dispatch]);
 
   const reversionTableHead = [
-    "no.",
     "customer name",
     "table number",
     "table type",
     "people count",
     "date",
   ];
-  const tableHeadData = [
-    "no.",
-    "table number",
-    "capacity",
-    "tableType",
-    "status",
-  ];
+  const tableHeadData = ["table number", "capacity", "tableType", "status"];
   const employeesHeadData = [
-    "no.",
     "full name",
     "brithday",
     "phone number",
@@ -77,7 +69,6 @@ const Home = () => {
     "sanctions",
   ];
   const ordersHeadData = [
-    "no.",
     "table number",
     "order name",
     "category",
@@ -85,7 +76,6 @@ const Home = () => {
     "quantity",
   ];
   const productsHeadData = [
-    "no.",
     "product name",
     "product price",
     "category",
@@ -149,7 +139,6 @@ const Home = () => {
                   className={table.availability === true && "not-available"}
                   key={nanoid(4)}
                 >
-                  <TableData key={nanoid(2)}>{table.id}</TableData>
                   <TableData key={nanoid(2)}>{table.tableNumber}</TableData>
                   <TableData key={nanoid(2)}>{table.capacity}</TableData>
                   <TableData key={nanoid(2)}>{table.tableType}</TableData>
@@ -175,7 +164,6 @@ const Home = () => {
           {reservationsData.map((reserve) => {
             return (
               <TableRow key={nanoid(4)}>
-                <TableData key={nanoid(2)}>{reserve.id}</TableData>
                 <TableData key={nanoid(2)}>{reserve.customerName}</TableData>
                 <TableData key={nanoid(2)}>{reserve.tableNumber}</TableData>
                 <TableData key={nanoid(2)}>{reserve.tableType}</TableData>
@@ -200,7 +188,6 @@ const Home = () => {
             productsData.map((product) => {
               return (
                 <TableRow key={nanoid(3)}>
-                  <TableData key={nanoid(2)}>{product.id}</TableData>
                   <TableData key={nanoid(2)}>{product.productName}</TableData>
                   <TableData key={nanoid(2)}>{product.productPrice}</TableData>
                   <TableData key={nanoid(2)}>{product.categories}</TableData>
@@ -224,7 +211,6 @@ const Home = () => {
             ordersData.map((order) => {
               return (
                 <TableRow key={nanoid(3)}>
-                  <TableData key={nanoid(2)}>{order.id}</TableData>
                   <TableData key={nanoid(2)}>{order.tableNumber}</TableData>
                   <TableData key={nanoid(2)}>{order.orderName}</TableData>
                   <TableData key={nanoid(2)}>{order.category}</TableData>
@@ -248,7 +234,6 @@ const Home = () => {
             emplyeesData.map((emplyee) => {
               return (
                 <TableRow key={nanoid(3)}>
-                  <TableData key={nanoid(2)}>{emplyee.id}</TableData>
                   <TableData key={nanoid(2)}>{emplyee.fullName}</TableData>
                   <TableData key={nanoid(2)}>{emplyee.brithday}</TableData>
                   <TableData key={nanoid(2)}>{emplyee.phoneNumber}</TableData>

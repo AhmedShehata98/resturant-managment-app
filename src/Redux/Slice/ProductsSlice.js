@@ -21,7 +21,6 @@ export const GET_PRODUCTS_ACTION = createAsyncThunk(
       const resProductsList = snapshotProducts.docs.map((doc) => {
         return { id: doc.id, ...doc.data() };
       });
-      console.log(resProductsList);
       return resProductsList;
       //
     } catch (error) {

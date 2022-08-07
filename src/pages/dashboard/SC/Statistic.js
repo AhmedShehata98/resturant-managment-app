@@ -18,6 +18,10 @@ const StyledStatistic = styled.div`
     background-color: var(--bs-primary) !important;
     color: var(--bs-white) !important;
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
 `;
 const Counting = styled.span`
   width: 100%;

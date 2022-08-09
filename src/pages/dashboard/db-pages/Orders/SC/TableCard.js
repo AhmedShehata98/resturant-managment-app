@@ -68,24 +68,21 @@ const Actions = styled.span`
 `;
 
 function TableCard(props) {
-  const handleShowOrderModal = () => {
-    props.setOrderModal({
-      showOrder: true,
-      oldOrders: props.Orders.length === 0 ? null : props.Orders,
-      TableNumber: props.TableNumber,
-      tableSelectedID: props.id,
-    });
-  };
-
-  const handleShowCheckout = () => {
+  const handleShowCheckoutModal = () => {
     props.setCheckoutModal({
+      ...props.CheckoutModal,
       showCheckout: true,
-      ordersList: props.Orders || [],
-      tableNumber: props.TableNumber,
-      tableSelectedID: props.id,
+      tableInformation: { ...props.TableInformation },
     });
   };
 
+  const handleShowAddOrderModal = () => {
+    props.setOrderModal({
+      ...props.OrderModal,
+      showOrder: true,
+      tableSelectedID: props.id,
+    });
+  };
   return (
     <StyledTableCard {...props}>
       <TableIcon key={nanoid(8)}>
@@ -94,19 +91,23 @@ function TableCard(props) {
       <TableInformation key={nanoid(8)}>
         <Chip
           key={nanoid(6)}
-          label={props.TableNumber}
+          label={props.TableInformation.tableNumber}
           variant="filled"
           icon={<LabelIcon />}
         />
         <Chip
           key={nanoid(6)}
-          label={props.Capacity}
+          label={props.TableInformation.capacity}
           variant="outlined"
           icon={<ChairIcon />}
         />
         <Chip
           key={nanoid(6)}
-          label={props.Orders.length}
+          label={
+            Array.isArray(props.TableInformation.orders)
+              ? props.TableInformation.orders.length
+              : 0
+          }
           variant="outlined"
           icon={<ShoppingCartIcon />}
         />
@@ -117,7 +118,7 @@ function TableCard(props) {
           name="add-order"
           variant="contained"
           size="small"
-          onClick={() => handleShowOrderModal()}
+          onClick={() => handleShowAddOrderModal()}
         >
           <small>add order</small>
         </Button>
@@ -126,7 +127,7 @@ function TableCard(props) {
           name="checkout"
           variant="outlined"
           size="small"
-          onClick={() => handleShowCheckout()}
+          onClick={() => handleShowCheckoutModal()}
         >
           <small>checkout</small>
         </Button>

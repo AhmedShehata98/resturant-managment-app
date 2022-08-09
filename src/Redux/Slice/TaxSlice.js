@@ -63,12 +63,51 @@ export const UPDATE_TAX_DATA = createAsyncThunk(
 const initialState = {
   isLoading: false,
   isError: false,
+  service: 0,
+  vat: 0,
   taxData: [],
 };
 const taxSlice = createSlice({
   name: "tax",
   initialState,
-  extraReducers: {},
+  extraReducers: {
+    [GET_ALL_DATA.pending]: (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.taxData = [];
+    },
+    [GET_ALL_DATA.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.taxData = action.payload;
+      action.payload.filter((item) => {
+        if (item.taxType === "vat") {
+          return (state.vat = item.taxAmount);
+        }
+        if (item.taxType === "Services") {
+          return (state.service = item.taxAmount);
+        }
+      });
+    },
+    [GET_ALL_DATA.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+    },
+    [UPDATE_TAX_DATA.pending]: (state) => {
+      state.isLoading = true;
+      state.isError = false;
+      state.taxData = [];
+    },
+    [UPDATE_TAX_DATA.fulfilled]: (state, action) => {
+      state.isLoading = false;
+      state.isError = false;
+      state.taxData.push(action.payload);
+    },
+    [UPDATE_TAX_DATA.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.isError = true;
+    },
+  },
 });
 
 export default taxSlice.reducer;

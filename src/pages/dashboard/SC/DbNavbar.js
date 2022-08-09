@@ -11,6 +11,7 @@ const StyledDbNavbar = styled.nav`
   gap: 1.2rem;
   overflow-y: auto;
   overflow-x: hidden;
+  padding-block: 0.5rem;
 
   &::-webkit-scrollbar {
     webkit-appearance: none;

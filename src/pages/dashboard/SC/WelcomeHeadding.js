@@ -12,10 +12,15 @@ const StyledWelcomeHeadding = styled.div`
   > :first-child {
     margin-bottom: 0;
     text-transform: capitalize;
+
+    @media (max-width: 768px) {
+      font-size: 0.7rem;
+    }
   }
   > :last-child {
     opacity: 0.7;
     text-transform: capitalize;
+    font-size: 0.7rem;
   }
 `;
 

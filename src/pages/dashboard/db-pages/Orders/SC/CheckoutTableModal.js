@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import ClearTwoToneIcon from "@mui/icons-material/ClearTwoTone";
 import WidgetsOutlinedIcon from "@mui/icons-material/WidgetsOutlined";
 import { Button } from "@mui/material";
 import { nanoid } from "nanoid";
+
+// redux
+import { useDispatch, useSelector } from "react-redux";
+import { GET_ALL_DATA } from "../../../../../Redux/Slice/TaxSlice";
 
 const ReportWrapperBackdrop = styled.main`
   position: absolute;
@@ -170,7 +174,16 @@ const ReportFooter = styled.footer`
 //
 //
 const CheckoutTableModal = (props) => {
-  const [totalAmount, setTotalAmount] = useState(0);
+  const dispatch = useDispatch();
+  const {
+    tax: { taxData, service, vat, isLoading, isError },
+  } = useSelector((state) => state);
+  console.log(taxData, service, vat);
+  // const vatTax = useRef(taxData[0].taxAmount);
+  // const servicesTax = useRef(taxData[1].taxAmount);
+  const [subTotalAmount, setSubTotalAmount] = useState(0);
+  const [TotalAmount, setTotalAmount] = useState(0);
+  const orderList = useRef(props.OrderModal.tableInformation.orders);
   //
   useEffect(() => {
     document.body.style.height = "100vh";
@@ -180,33 +193,50 @@ const CheckoutTableModal = (props) => {
     };
   }, []);
   useEffect(() => {
-    const orderList = props.OrderModal.ordersList;
-    const calcTotalAmount = orderList.reduce(
-      (prevValue, currentValue) =>
-        +prevValue.orderPrice * +prevValue.quantity +
-        +currentValue.orderPrice * +currentValue.quantity
-    );
-    setTotalAmount(calcTotalAmount);
+    dispatch(GET_ALL_DATA());
   }, []);
+  useEffect(() => {
+    //chiking if orders and if there are orders then  loop in
+    // all orders array list and calculating total sub total amount
+    if (orderList.current && Array.isArray(orderList.current)) {
+      const calculatedAmount = orderList.current.reduce((prev, next) => {
+        return (
+          prev.orderPrice * prev.quantity + next.orderPrice * next.quantity
+        );
+      });
+      // set sub tutal amount for orders
+      setSubTotalAmount(calculatedAmount);
+    }
+  }, []);
+  useEffect(() => {
+    // set total amount for all orders with tax
+    if (isLoading === false && isError === false) {
+      setTotalAmount(subTotalAmount + service + vat);
+    }
+  }, [isLoading, isError]);
 
   const handleCloseModal = () => {
     props.setCheckoutModal({ ...props.CheckoutModal, showCheckout: false });
   };
 
-  const ItrableOrders = props.OrderModal.ordersList.map((order) => {
-    return (
-      <OrdersItems key={nanoid(6)}>
-        <span key={nanoid(4)}>
-          <WidgetsOutlinedIcon fontSize="medium" color="action" />
-        </span>
-        <div key={nanoid(4)}>
-          <span>{order.orderName}</span>
-          <small>{order.quantity}</small>
-        </div>
-        <b>{order.orderPrice * order.quantity} L.E</b>
-      </OrdersItems>
-    );
-  });
+  const ItrableOrders =
+    orderList.current &&
+    Array.isArray(orderList.current) &&
+    props.OrderModal.tableInformation.orders.map((order) => {
+      return (
+        <OrdersItems key={nanoid(6)}>
+          <span key={nanoid(4)}>
+            <WidgetsOutlinedIcon fontSize="medium" color="action" />
+          </span>
+          <div key={nanoid(4)}>
+            <span>{order.orderName}</span>
+            <small>{order.quantity}</small>
+          </div>
+          <b>{order.orderPrice * order.quantity} L.E</b>
+        </OrdersItems>
+      );
+    });
+
   return (
     <ReportWrapperBackdrop>
       <RepoortWrapper>
@@ -224,20 +254,20 @@ const CheckoutTableModal = (props) => {
           <Price>
             <ListPrices>
               <small>subtotal</small>
-              <b>110 l.E</b>
+              <b>{subTotalAmount} l.E</b>
             </ListPrices>
             <ListPrices>
-              <small>Tax</small>
-              <b>30 l.E</b>
+              <small>VAT</small>
+              <b>{vat} l.E</b>
             </ListPrices>
             <ListPrices>
               <small>Services</small>
-              <b>50 l.E</b>
+              <b>{service} l.E</b>
             </ListPrices>
           </Price>
           <Total>
             <b>Total</b>
-            <b>{totalAmount} L.E</b>
+            <b>{TotalAmount} L.E</b>
           </Total>
         </ReportContent>
         <ReportFooter>

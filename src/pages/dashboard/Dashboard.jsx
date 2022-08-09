@@ -36,6 +36,7 @@ const Dashboard = () => {
   const {
     app: { isOpenToast, toastMessage, toastMessageSeverity },
   } = useSelector((state) => state);
+  const [showWelcome, setShowWelcome] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   useEffect(() => {
@@ -110,11 +111,13 @@ const Dashboard = () => {
       </Asidebar>
       <DashboardSection AsideWidth="60px">
         <DashboardHeader>
-          <WelcomeHeadding>
-            <strong>Welcome , Ahmed Shehata</strong>
-            <small>Lorem ipsum dolor sit amet consectetur.</small>
-          </WelcomeHeadding>
-          <SearchField />
+          {showWelcome && (
+            <WelcomeHeadding>
+              <strong>Welcome , Ahmed Shehata</strong>
+              <small>Lorem ipsum dolor sit amet consectetur.</small>
+            </WelcomeHeadding>
+          )}
+          <SearchField setShowWelcome={setShowWelcome} />
         </DashboardHeader>
         <Outlet />
         <Snackbar

@@ -191,13 +191,14 @@ export const tablesSlice = createSlice({
       const currentTargetID = action.meta.arg.id;
       const responseData = action.payload;
       const newTablesData = state.tablesData.filter(
-        (table) => table.id !== currentTargetID
+        (table) => table.id === currentTargetID
       );
-      newTablesData.push(responseData);
+      // newTablesData.push(responseData);
+      console.log(newTablesData);
       state.isLoading = false;
       state.isError = false;
       state.errorMessage = "";
-      state.tablesData = newTablesData;
+      // state.tablesData = newTablesData;
     },
     [EDIT_TABLE_ACTION.rejected]: function (state, action) {
       state.isLoading = false;

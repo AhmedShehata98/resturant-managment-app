@@ -37,15 +37,11 @@ const Order = () => {
   }, [dispatch]);
   const [OrderModal, setOrderModal] = useState({
     showOrder: false,
-    oldOrders: [],
-    TableNumber: 0,
     tableSelectedID: 0,
   });
   const [CheckoutModal, setCheckoutModal] = useState({
     showCheckout: false,
-    ordersList: [],
-    tableNumber: 0,
-    tableSelectedID: 0,
+    TableInformation: {},
   });
   //
   const OrderContainer = document.getElementById("orders-modal");
@@ -96,9 +92,8 @@ const Order = () => {
                   setOrderModal={setOrderModal}
                   setCheckoutModal={setCheckoutModal}
                   CheckoutModal={CheckoutModal}
-                  TableNumber={tableCard.tableNumber}
-                  Capacity={tableCard.capacity}
-                  Orders={tableCard.orders}
+                  OrderModal={OrderModal}
+                  TableInformation={tableCard}
                 />
               </>
             );

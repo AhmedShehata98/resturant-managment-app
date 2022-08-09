@@ -9,6 +9,27 @@ const StyledSearchField = styled.form`
   display: flex;
   align-items: center;
   border-radius: 0.5rem;
+  transition: width 0.3s ease-out;
+  @media (max-width: 768px) {
+    width: 40px;
+  }
+
+  &.expand {
+    @media (max-width: 768px) {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 768px) {
+    width: 40px;
+    overflow: hidden;
+    justify-content: center;
+    > :nth-child(2) {
+      > :last-child {
+        display: none;
+      }
+    }
+  }
 `;
 const SearchInput = styled.input`
   width: 100%;
@@ -39,10 +60,24 @@ const Placeholder = styled.div`
 `;
 
 function SearchField(props) {
-  const handleShow = (e) => (e.target.nextElementSibling.style.opacity = "0");
+  const handleShow = (e) => {
+    e.target.nextElementSibling.style.opacity = "0";
+    handleExpandSearch(e, true);
+    props.setShowWelcome(false);
+  };
   const handleHidden = (e) => {
     e.target.nextElementSibling.style.opacity = "1";
-    console.log(e.target);
+    handleExpandSearch(e, false);
+    props.setShowWelcome(true);
+  };
+
+  const handleExpandSearch = (e, expandState) => {
+    const element = e.target;
+    if (expandState === true) {
+      element.closest("form").classList.add("expand");
+    } else {
+      element.closest("form").classList.remove("expand");
+    }
   };
   return (
     <StyledSearchField>

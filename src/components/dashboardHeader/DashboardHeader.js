@@ -10,6 +10,10 @@ const StyledDashboardHeader = styled.header`
   background-color: var(--bs-gray-300);
   margin-block-start: 1rem;
   margin-block-end: 1rem;
+
+  @media (max-width: 768px) {
+    padding-inline: 1rem;
+  }
 `;
 
 const DashboardHeader = (props) => {

@@ -118,10 +118,12 @@ const OrderSlice = createSlice({
       state.errorMessage = "";
     },
     [ADD_ORDERS_ACTION.fulfilled]: function (state, action) {
+      const targetID = action.meta.id;
+      const newData = state.ordersData.filter((order) => order.id === targetID);
+      console.log(newData);
       state.isLoading = false;
       state.isError = false;
       state.errorMessage = "";
-      state.ordersData.push(action.payload);
     },
     [ADD_ORDERS_ACTION.rejected]: function (state, action) {
       state.isLoading = false;
